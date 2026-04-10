@@ -4,7 +4,7 @@ using WebSite.Models;
 
 namespace WebSite.Controllers;
 
-public class HomeController : Controller
+public class agentController : Controller
 {
     public IActionResult Index()
     {
