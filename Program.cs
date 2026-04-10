@@ -1,8 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); // نام کانکشن استرینگ را از appsettings.json بخوانید
+builder.Services.AddDbContext<RealEstateDbContext>(options =>
+    options.UseSqlServer(connectionString));
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
