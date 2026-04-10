@@ -1,0 +1,6 @@
+# Ignore Visual Studio build output directories
+obj/
+bin/
+
+# Ignore Properties folder (often contains settings files, etc.)
+Properties/
