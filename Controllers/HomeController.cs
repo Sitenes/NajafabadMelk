@@ -1,14 +1,46 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebSite.Models;
 
 namespace WebSite.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly RealEstateDbContext _context;
+
+    public HomeController(RealEstateDbContext context)
     {
-        return View();
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var AdvertisementViewModel = new HomeViewModel();
+        var totalAdvertisements = await _context.Advertisements.CountAsync();
+        if (totalAdvertisements < 5)
+        {
+            AdvertisementViewModel.advertisements = await _context.Advertisements
+            .Include(x => x.Keywords)
+            .Include(x => x.Deal)
+            .Include(x => x.House)
+            .ThenInclude(x => x.Images)
+            .ToListAsync();
+            AdvertisementViewModel.advertisementsCount = totalAdvertisements;
+        }
+        else
+        {
+            AdvertisementViewModel.advertisements = await _context.Advertisements
+                .OrderBy(a => Guid.NewGuid()) // مرتب‌سازی تصادفی
+                .Take(10)
+                .Include(x => x.Keywords)
+                .Include(x => x.Deal)
+                .Include(x => x.House)
+                .ThenInclude(x => x.Images)
+                .ToListAsync();
+            AdvertisementViewModel.advertisementsCount = 3;
+        }
+        return View(AdvertisementViewModel);
     }
 
     public IActionResult services()
@@ -46,7 +78,7 @@ public class HomeController : Controller
         return View();
     }
 
-     public IActionResult about()
+    public IActionResult about()
     {
         return View();
     }

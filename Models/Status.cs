@@ -1,14 +1,19 @@
-using System.ComponentModel.DataAnnotations; // برای Data Annotations
+using System.ComponentModel.DataAnnotations;
 
-// مدل وضعیت (Status)
 public class Status
 {
-    public int Id { get; set; } // کلید اصلی
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int Value { get; set; }
+    public int Group { get; set; }
+}
 
-    [Required]
-    public string Name { get; set; } // نام وضعیت
+public class HouseImage
+{
+    public int Id { get; set; }
+    public string Url { get; set; }
 
-    public int Value { get; set; } // ارزش
-
-    public int Group { get; set; } // گروه
+    //Relation --------------------------
+    public int HouseId { get; set; }
+    public House House { get; set; }
 }

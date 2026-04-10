@@ -14,6 +14,8 @@ public class RealEstateDbContext : DbContext
     public DbSet<Floor> Floors { get; set; }
     public DbSet<Deal> Deals { get; set; }
     public DbSet<Status> Statuses { get; set; }
+    public DbSet<Keyword> keywords{ get; set; }
+    public DbSet<Material> materials { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

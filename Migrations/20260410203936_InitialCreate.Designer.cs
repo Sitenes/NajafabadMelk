@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebSite.Migrations
 {
     [DbContext(typeof(RealEstateDbContext))]
-    [Migration("20260410185057_InitialCreate")]
+    [Migration("20260410203936_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,6 +32,9 @@ namespace WebSite.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("DealId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -39,19 +42,32 @@ namespace WebSite.Migrations
                     b.Property<int>("HouseId")
                         .HasColumnType("int");
 
-                    b.PrimitiveCollection<string>("Keywords")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DealId");
+
                     b.HasIndex("HouseId");
 
                     b.ToTable("Advertisements");
+                });
+
+            modelBuilder.Entity("AdvertisementKeyword", b =>
+                {
+                    b.Property<int>("AdvertisementsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KeywordsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AdvertisementsId", "KeywordsId");
+
+                    b.HasIndex("KeywordsId");
+
+                    b.ToTable("AdvertisementKeyword");
                 });
 
             modelBuilder.Entity("Deal", b =>
@@ -62,12 +78,8 @@ namespace WebSite.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AdvertisementId")
+                    b.Property<int>("DealTypeId")
                         .HasColumnType("int");
-
-                    b.Property<string>("DealType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("DownPayment")
                         .HasColumnType("decimal(18,2)");
@@ -83,7 +95,7 @@ namespace WebSite.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdvertisementId");
+                    b.HasIndex("DealTypeId");
 
                     b.ToTable("Deals");
                 });
@@ -113,10 +125,6 @@ namespace WebSite.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.PrimitiveCollection<string>("FloorMaterials")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("HasBalcony")
                         .HasColumnType("bit");
 
@@ -131,7 +139,7 @@ namespace WebSite.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HouseId")
+                    b.Property<int>("HouseId")
                         .HasColumnType("int");
 
                     b.Property<int>("RoomCount")
@@ -140,19 +148,31 @@ namespace WebSite.Migrations
                     b.Property<double?>("StorageArea")
                         .HasColumnType("float");
 
-                    b.PrimitiveCollection<string>("ToiletTypes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.PrimitiveCollection<string>("WallMaterials")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ToiletTypeId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("HouseId");
 
+                    b.HasIndex("ToiletTypeId");
+
                     b.ToTable("Floors");
+                });
+
+            modelBuilder.Entity("FloorMaterial", b =>
+                {
+                    b.Property<int>("FloorMaterialsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FloorsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FloorMaterialsId", "FloorsId");
+
+                    b.HasIndex("FloorsId");
+
+                    b.ToTable("FloorMaterial");
                 });
 
             modelBuilder.Entity("House", b =>
@@ -186,10 +206,6 @@ namespace WebSite.Migrations
                     b.Property<bool>("HasPool")
                         .HasColumnType("bit");
 
-                    b.PrimitiveCollection<string>("ImageUrls")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ParkingCount")
                         .HasColumnType("int");
 
@@ -205,6 +221,66 @@ namespace WebSite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Houses");
+                });
+
+            modelBuilder.Entity("HouseImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HouseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HouseId");
+
+                    b.ToTable("HouseImage");
+                });
+
+            modelBuilder.Entity("Keyword", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("keywords");
+                });
+
+            modelBuilder.Entity("Material", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("materials");
                 });
 
             modelBuilder.Entity("Status", b =>
@@ -232,8 +308,87 @@ namespace WebSite.Migrations
 
             modelBuilder.Entity("Advertisement", b =>
                 {
+                    b.HasOne("Deal", "Deal")
+                        .WithMany()
+                        .HasForeignKey("DealId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("House", "House")
                         .WithMany()
+                        .HasForeignKey("HouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Deal");
+
+                    b.Navigation("House");
+                });
+
+            modelBuilder.Entity("AdvertisementKeyword", b =>
+                {
+                    b.HasOne("Advertisement", null)
+                        .WithMany()
+                        .HasForeignKey("AdvertisementsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Keyword", null)
+                        .WithMany()
+                        .HasForeignKey("KeywordsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Deal", b =>
+                {
+                    b.HasOne("Status", "DealType")
+                        .WithMany()
+                        .HasForeignKey("DealTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DealType");
+                });
+
+            modelBuilder.Entity("Floor", b =>
+                {
+                    b.HasOne("House", "House")
+                        .WithMany("Floors")
+                        .HasForeignKey("HouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Status", "ToiletType")
+                        .WithMany()
+                        .HasForeignKey("ToiletTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("House");
+
+                    b.Navigation("ToiletType");
+                });
+
+            modelBuilder.Entity("FloorMaterial", b =>
+                {
+                    b.HasOne("Material", null)
+                        .WithMany()
+                        .HasForeignKey("FloorMaterialsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Floor", null)
+                        .WithMany()
+                        .HasForeignKey("FloorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("HouseImage", b =>
+                {
+                    b.HasOne("House", "House")
+                        .WithMany("Images")
                         .HasForeignKey("HouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -241,27 +396,11 @@ namespace WebSite.Migrations
                     b.Navigation("House");
                 });
 
-            modelBuilder.Entity("Deal", b =>
-                {
-                    b.HasOne("Advertisement", "Advertisement")
-                        .WithMany()
-                        .HasForeignKey("AdvertisementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Advertisement");
-                });
-
-            modelBuilder.Entity("Floor", b =>
-                {
-                    b.HasOne("House", null)
-                        .WithMany("Floors")
-                        .HasForeignKey("HouseId");
-                });
-
             modelBuilder.Entity("House", b =>
                 {
                     b.Navigation("Floors");
+
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }
