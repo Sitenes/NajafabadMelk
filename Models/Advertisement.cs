@@ -4,8 +4,13 @@ using System.ComponentModel.DataAnnotations; // برای Data Annotations
 public class Advertisement
 {
     public int Id { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string TitleFa { get; set; }
+    public string TitleEn { get; set; }
+    public string TitleAr { get; set; }
+
+    public string DescriptionFa { get; set; }
+    public string DescriptionEn { get; set; }
+    public string DescriptionAr { get; set; }
 
     //Relation----------------------------------------
     public int HouseId { get; set; }

@@ -8,6 +8,11 @@ public class Deal
     public decimal? MonthlyPayment { get; set; }
     public decimal TotalPrice { get; set; }
     public bool IsExchangeable { get; set; }
+
+    public bool HaveOffer { get; set; }
+     public decimal? FinalDownPayment { get; set; }
+    public decimal? FinalMonthlyPayment { get; set; }
+    public decimal FinalTotalPrice { get; set; }
     
     //Relation ----------------------
     public int DealTypeId { get; set; }
