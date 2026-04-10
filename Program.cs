@@ -21,9 +21,14 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    name: "localized_default",
+    pattern: "{lang:regex(^fa$|^en$|^ar$)}/{controller=Home}/{action=Index}/{id?}"
+).WithStaticAssets();
+
+app.MapControllerRoute(
+    name: "default_without_lang",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 
 app.Run();
