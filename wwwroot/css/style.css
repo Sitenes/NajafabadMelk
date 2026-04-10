@@ -9126,7 +9126,7 @@ textarea.form-control {
   -moz-animation: 1.6s ease infinite wheel-up-down;
   animation: 1.6s ease infinite wheel-up-down;
   color: #fff;
-  font-size: 24px; }
+  font-size: 35px; }
 
 @-webkit-keyframes wheel-up-down {
   100% {
