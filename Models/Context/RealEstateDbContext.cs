@@ -16,6 +16,8 @@ public class RealEstateDbContext : DbContext
     public DbSet<Status> Statuses { get; set; }
     public DbSet<Keyword> keywords{ get; set; }
     public DbSet<Material> materials { get; set; }
+    public DbSet<StaticData> staticDatas { get; set; }
+    public DbSet<StaticDataGroup> staticDataGroups { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

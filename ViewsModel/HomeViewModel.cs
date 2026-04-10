@@ -5,4 +5,5 @@ public class HomeViewModel
 {
     public int advertisementsCount { get; set; }
     public List<Advertisement> advertisements{ get; set; }
+    public List<StaticData> staticDatas{ get; set; }
 }

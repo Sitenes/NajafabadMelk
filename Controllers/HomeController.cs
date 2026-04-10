@@ -16,22 +16,22 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var AdvertisementViewModel = new HomeViewModel();
+        var ViewModel = new HomeViewModel();
         var totalAdvertisements = await _context.Advertisements.CountAsync();
         if (totalAdvertisements < 5)
         {
-            AdvertisementViewModel.advertisements = await _context.Advertisements
+            ViewModel.advertisements = await _context.Advertisements
             .Include(x => x.Keywords)
             .Include(x => x.Deal)
             .Include(x => x.House)
             .ThenInclude(x => x.Images)
             .Where(x => x.Deal.HaveOffer)
             .ToListAsync();
-            AdvertisementViewModel.advertisementsCount = totalAdvertisements;
+            ViewModel.advertisementsCount = totalAdvertisements;
         }
         else
         {
-            AdvertisementViewModel.advertisements = await _context.Advertisements
+            ViewModel.advertisements = await _context.Advertisements
                 .OrderBy(a => Guid.NewGuid()) // مرتب‌سازی تصادفی
                 .Take(10)
                 .Include(x => x.Keywords)
@@ -40,9 +40,12 @@ public class HomeController : Controller
                 .ThenInclude(x => x.Images)
                 .Where(x => x.Deal.HaveOffer)
                 .ToListAsync();
-            AdvertisementViewModel.advertisementsCount = 3;
+            ViewModel.advertisementsCount = 3;
         }
-        return View(AdvertisementViewModel);
+
+
+        ViewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
+        return View(ViewModel);
     }
 
     public IActionResult services()

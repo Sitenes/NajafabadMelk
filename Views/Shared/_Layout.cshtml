@@ -4,8 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>@ViewData["Title"] - Najafabad Melk</title>
-    @* <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:200,300,400,600,700,800,900&display=swap"
-          rel="stylesheet" /> *@
 
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -27,6 +25,38 @@
 </head>
 
 <body>
+    @{
+        // دریافت مسیر فعلی مثلاً /en/about
+        var currentPath = ViewContext.HttpContext.Request.Path.Value ?? "/";
+
+        // تابعی کوچک برای ساخت لینک جدید
+        string GetLocalizedUrl(string lang)
+        {
+            // جدا کردن بخش‌های مسیر (مثلا: ["", "en", "about"])
+            var segments = currentPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+            // اگر آدرس فعلی ریشه باشد (فقط /)
+            if (segments.Length == 0) return $"/{lang}";
+
+            // چک کردن اینکه آیا بخش اول مسیر یک کد زبان است (مثلا fa, en, ar)
+            var supportedLanguages = new[] { "fa", "en", "ar" };
+            if (supportedLanguages.Contains(segments[0]))
+            {
+                // جایگزینی زبان فعلی با زبان جدید
+                segments[0] = lang;
+            }
+            else
+            {
+                // اگر در آدرس زبان وجود ندارد، آن را به اول اضافه می‌کنیم
+                var newSegments = new string[segments.Length + 1];
+                newSegments[0] = lang;
+                Array.Copy(segments, 0, newSegments, 1, segments.Length);
+                segments = newSegments;
+            }
+
+            return "/" + string.Join("/", segments);
+        }
+    }
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
             <div class="container">
@@ -52,9 +82,9 @@
                                     Langouage
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">فارسی</a></li>
-                                    <li><a class="dropdown-item" href="#">English</a></li>
-                                    <li><a class="dropdown-item" href="#">عربی</a></li>
+                                    <li><a class="dropdown-item" href="@GetLocalizedUrl("fa")">فارسی</a></li>
+                                    <li><a class="dropdown-item" href="@GetLocalizedUrl("en")">English</a></li>
+                                    <li><a class="dropdown-item" href="@GetLocalizedUrl("ar")">عربی</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -136,7 +166,8 @@
 
                                 <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                     Copyright &copy;
-                                    <script>document.write(new Date().getFullYear());</script> BY <i class="icon-heart color-danger" aria-hidden="true"></i> 
+                                    <script>document.write(new Date().getFullYear());</script> BY <i class="icon-heart color-danger"
+                                                                                                     aria-hidden="true"></i>
                                     <a href="https://bizapTech.ir" target="_blank">BizAp</a> All rights reserved
                                     <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                 </p>
