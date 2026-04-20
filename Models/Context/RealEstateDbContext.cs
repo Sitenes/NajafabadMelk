@@ -18,6 +18,7 @@ public class RealEstateDbContext : DbContext
     public DbSet<Material> materials { get; set; }
     public DbSet<StaticData> staticDatas { get; set; }
     public DbSet<StaticDataGroup> staticDataGroups { get; set; }
+    public DbSet<Agent> Agents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

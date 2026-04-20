@@ -45,6 +45,7 @@ public class HomeController : Controller
 
 
         ViewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
+        ViewModel.agents = await _context.Agents.Take(4).ToListAsync();
         return View(ViewModel);
     }
 
