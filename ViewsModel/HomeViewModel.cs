@@ -55,6 +55,7 @@ public class propertiesSingleViewModel
 {
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
     public Advertisement? advertisement { get; set; }
+    public List<Advertisement> relatedAdvertisements { get; set; } = new List<Advertisement>();
 }
 
 public class servicesViewModel

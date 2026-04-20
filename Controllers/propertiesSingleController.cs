@@ -25,8 +25,12 @@ public class propertiesSingleController : Controller
         viewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
 
         viewModel.advertisement = await _context.Advertisements
+            .Include(x => x.Keywords)
             .Include(x => x.House)
             .ThenInclude(x => x.Images)
+            .Include(x => x.House)
+            .ThenInclude(x => x.Floors)
+            .ThenInclude(x => x.FloorMaterials)
             .Include(x => x.House)
             .ThenInclude(x => x.Floors)
             .ThenInclude(x => x.ToiletType)
@@ -38,6 +42,18 @@ public class propertiesSingleController : Controller
         {
             return NotFound();
         }
+
+        var dealTypeId = viewModel.advertisement.Deal?.DealTypeId;
+        viewModel.relatedAdvertisements = await _context.Advertisements
+            .Where(x => x.Id != id && (dealTypeId == null || x.Deal.DealTypeId == dealTypeId))
+            .Include(x => x.House)
+            .ThenInclude(x => x.Images)
+            .Include(x => x.House)
+            .ThenInclude(x => x.Floors)
+            .Include(x => x.Deal)
+            .OrderByDescending(x => x.Id)
+            .Take(3)
+            .ToListAsync();
 
         return View(viewModel);
     }
