@@ -25,7 +25,7 @@ public class HomeController : Controller
             .Include(x => x.Deal)
             .Include(x => x.House)
             .ThenInclude(x => x.Images)
-            .Where(x => x.Deal.HaveOffer)
+            .Where(x => x.Deal.HaveOffer && x.Deal.DealTypeId == 1)
             .ToListAsync();
             ViewModel.advertisementsCount = totalAdvertisements;
         }
@@ -38,9 +38,9 @@ public class HomeController : Controller
                 .Include(x => x.Deal)
                 .Include(x => x.House)
                 .ThenInclude(x => x.Images)
-                .Where(x => x.Deal.HaveOffer)
+                .Where(x => x.Deal.HaveOffer && x.Deal.DealTypeId == 1)
                 .ToListAsync();
-            ViewModel.advertisementsCount = 3;
+            ViewModel.advertisementsCount = ViewModel.advertisements.Count;
         }
 
 

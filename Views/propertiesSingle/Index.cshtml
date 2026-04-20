@@ -58,8 +58,9 @@
 
 	var totalArea = floors.Sum(x => x.Area);
 	var totalRooms = floors.Sum(x => x.RoomCount);
-	var toiletCount = floors.Sum(x => x.ToiletType?.Id == 1 ? 1 : 0);
+	var toiletCount = floors.Sum(x => x.ToiletType?.Id == 1 || x.ToiletType?.Id == 2 ? 1 : 0);
 	var totalCapacity = floors.Sum(x => x.Capacity);
+	var areaValue = house?.BuildingArea ?? totalArea;
 
 	ViewData["Lang"] = lang;
 }
@@ -79,7 +80,7 @@
 	</div>
 </section>
 
-<section class="ftco-section ftco-property-details">
+<section class="ftco-section ftco-property-details" dir="ltr">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-7 mb-4">
@@ -117,26 +118,70 @@
 						</p>
 					}
 
-					<ul class="features mt-3 mb-0" style="list-style: none; padding-left: 0;">
-						<li><span class="flaticon-floor-plan mr-1"></span>@T("Total Area", "متراژ کل", "المساحة الكلية"): @totalArea.ToString("N0") sqft</li>
-						<li><span class="flaticon-bed mr-1"></span>@T("Rooms", "اتاق", "الغرف"): @totalRooms</li>
-						<li><span class="flaticon-bathtub mr-1"></span>@T("Bath Rooms", "حمام", "الحمامات"): @toiletCount</li>
-						<li><span class="ion-ios-people mr-1"></span>@T("Capacity", "ظرفیت", "السعة"): @totalCapacity</li>
-						<li><span class="ion-ios-pricetag mr-1"></span>@T("Property Code", "کد ملک", "رمز العقار"): @(string.IsNullOrWhiteSpace(house?.PropertyCode) ? "-" : house.PropertyCode)</li>
-					</ul>
+					<div class="table-responsive mt-3">
+						<table class="table table-sm table-borderless mb-0">
+							<tbody>
+								<tr>
+									<td><span class="flaticon-floor-plan mr-1"></span>@T("Total Area", "متراژ کل", "المساحة الكلية")</td>
+									<td class="text-right">@areaValue.ToString("N0") sqft</td>
+								</tr>
+								<tr>
+									<td><span class="flaticon-bed mr-1"></span>@T("Rooms", "اتاق", "الغرف")</td>
+									<td class="text-right">@totalRooms</td>
+								</tr>
+								<tr>
+									<td><span class="flaticon-bathtub mr-1"></span>@T("Bath Rooms", "حمام", "الحمامات")</td>
+									<td class="text-right">@toiletCount</td>
+								</tr>
+								<tr>
+									<td><span class="ion-ios-people mr-1"></span>@T("Capacity", "ظرفیت", "السعة")</td>
+									<td class="text-right">@totalCapacity</td>
+								</tr>
+								<tr>
+									<td><span class="ion-ios-pricetag mr-1"></span>@T("Property Code", "کد ملک", "رمز العقار")</td>
+									<td class="text-right">@(string.IsNullOrWhiteSpace(house?.PropertyCode) ? "-" : house.PropertyCode)</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 
 				<div class="bg-white p-4 shadow-sm mb-4">
 					<h4 class="mb-3">@T("Financial", "مالی", "المالية")</h4>
-					<ul class="features mb-0" style="list-style: none; padding-left: 0;">
-						<li><span class="ion-ios-swap mr-1"></span>@T("Deal Type", "نوع معامله", "نوع الصفقة"): @(deal?.DealType?.Name ?? "-")</li>
-						<li><span class="ion-logo-usd mr-1"></span>@T("Initial Price", "قیمت اولیه", "السعر الأساسي"): @totalPrice.ToString("N0")</li>
-						<li><span class="ion-ios-cash mr-1"></span>@T("Final Price", "قیمت نهایی", "السعر النهائي"): @finalPrice.ToString("N0")</li>
-						<li><span class="ion-ios-card mr-1"></span>@T("Down Payment", "پیش پرداخت", "الدفعة المقدمة"): @((deal?.DownPayment ?? 0).ToString("N0"))</li>
-						<li><span class="ion-ios-calendar mr-1"></span>@T("Monthly Payment", "پرداخت ماهانه", "الدفع الشهري"): @((deal?.MonthlyPayment ?? 0).ToString("N0"))</li>
-						<li><span class="ion-ios-pricetag mr-1"></span>@T("Offer Down Payment", "پیش پرداخت تخفیفی", "دفعة العرض"): @((deal?.FinalDownPayment ?? 0).ToString("N0"))</li>
-						<li><span class="ion-ios-pricetags mr-1"></span>@T("Offer Monthly Payment", "قسط ماهانه تخفیفی", "قسط العرض الشهري"): @((deal?.FinalMonthlyPayment ?? 0).ToString("N0"))</li>
-					</ul>
+					<div class="table-responsive">
+						<table class="table table-sm table-borderless mb-0">
+							<tbody>
+								<tr>
+									<td><span class="ion-ios-swap mr-1"></span>@T("Deal Type", "نوع معامله", "نوع الصفقة")</td>
+									<td class="text-right">@(deal?.DealType?.Name ?? "-")</td>
+								</tr>
+								<tr>
+									<td><span class="ion-logo-usd mr-1"></span>@T("Initial Price", "قیمت اولیه", "السعر الأساسي")</td>
+									<td class="text-right">@totalPrice.ToString("N0")</td>
+								</tr>
+								<tr>
+									<td><span class="ion-ios-cash mr-1"></span>@T("Final Price", "قیمت نهایی", "السعر النهائي")</td>
+									<td class="text-right">@finalPrice.ToString("N0")</td>
+								</tr>
+								<tr>
+									<td><span class="ion-ios-card mr-1"></span>@T("Down Payment", "پیش پرداخت", "الدفعة المقدمة")</td>
+									<td class="text-right">@((deal?.DownPayment ?? 0).ToString("N0"))</td>
+								</tr>
+								<tr>
+									<td><span class="ion-ios-calendar mr-1"></span>@T("Monthly Payment", "پرداخت ماهانه", "الدفع الشهري")</td>
+									<td class="text-right">@((deal?.MonthlyPayment ?? 0).ToString("N0"))</td>
+								</tr>
+								<tr>
+									<td><span class="ion-ios-pricetag mr-1"></span>@T("Offer Down Payment", "پیش پرداخت تخفیفی", "دفعة العرض")</td>
+									<td class="text-right">@((deal?.FinalDownPayment ?? 0).ToString("N0"))</td>
+								</tr>
+								<tr>
+									<td><span class="ion-ios-pricetags mr-1"></span>@T("Offer Monthly Payment", "قسط ماهانه تخفیفی", "قسط العرض الشهري")</td>
+									<td class="text-right">@((deal?.FinalMonthlyPayment ?? 0).ToString("N0"))</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -172,6 +217,88 @@
 				</div>
 			</div>
 		</div>
+
+		@if (floors.Any())
+		{
+			<div class="row mt-4">
+				<div class="col-md-12">
+					<div class="bg-white p-4 shadow-sm">
+						<h4 class="mb-3">@T("Floor Details", "جزئیات هر طبقه", "تفاصيل كل طابق")</h4>
+						<div class="row">
+							@foreach (var floor in floors)
+							{
+								var floorMaterialsText = floor.FloorMaterials
+									.Select(x => lang switch
+									{
+										"fa" => x.ContentFa ?? x.Name,
+										"ar" => x.ContentAr ?? x.Name,
+										_ => x.ContentEn ?? x.Name
+									})
+									.Where(x => !string.IsNullOrWhiteSpace(x))
+									.Distinct()
+									.ToList();
+
+								<div class="col-md-6 mb-3">
+									<div class="border rounded p-3 h-100">
+										<h6 class="mb-3">@T("Floor", "طبقه", "الطابق") #@floor.Id</h6>
+										<div class="table-responsive">
+											<table class="table table-sm table-borderless mb-0">
+												<tbody>
+													<tr>
+														<td>@T("Area", "متراژ", "المساحة")</td>
+														<td class="text-right">@floor.Area.ToString("N0") sqft</td>
+													</tr>
+													<tr>
+														<td>@T("Rooms", "اتاق", "الغرف")</td>
+														<td class="text-right">@floor.RoomCount</td>
+													</tr>
+													<tr>
+														<td>@T("Capacity", "ظرفیت", "السعة")</td>
+														<td class="text-right">@floor.Capacity</td>
+													</tr>
+													<tr>
+														<td>@T("Bathroom", "سرویس", "الحمام")</td>
+														<td class="text-right">@(floor.ToiletType?.Value ?? 0)</td>
+													</tr>
+													<tr>
+														<td>@T("Balcony", "بالکن", "الشرفة")</td>
+														<td class="text-right">@(floor.HasBalcony ? (floor.BalconyArea?.ToString("N0") ?? "0") + " sqm" : "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Storage", "انباری", "التخزين")</td>
+														<td class="text-right">@(floor.HasStorage ? (floor.StorageArea?.ToString("N0") ?? "0") + " sqm" : "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Direction", "جهت", "الاتجاه")</td>
+														<td class="text-right">@(floor.ConstructionDirection ?? "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Cooling", "سرمایش", "التبريد")</td>
+														<td class="text-right">@(floor.CoolingStatus ?? "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Heating", "گرمایش", "التدفئة")</td>
+														<td class="text-right">@(floor.HeatingStatus ?? "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Hot Water", "آب گرم", "المياه الساخنة")</td>
+														<td class="text-right">@(floor.HotWaterStatus ?? "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Materials", "متریال", "المواد")</td>
+														<td class="text-right">@(floorMaterialsText.Any() ? string.Join(" - ", floorMaterialsText) : "-")</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		}
 
 		@if (Model.relatedAdvertisements.Any())
 		{

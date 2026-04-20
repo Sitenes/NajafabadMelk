@@ -44,8 +44,10 @@ public class propertiesSingleController : Controller
         }
 
         var dealTypeId = viewModel.advertisement.Deal?.DealTypeId;
+        var finalPrice = viewModel.advertisement.Deal?.FinalTotalPrice ?? 0;
         viewModel.relatedAdvertisements = await _context.Advertisements
-            .Where(x => x.Id != id && (dealTypeId == null || x.Deal.DealTypeId == dealTypeId))
+            .Where(x => x.Id != id && (dealTypeId == null || x.Deal.DealTypeId == dealTypeId)
+             && Math.Abs(x.Deal.FinalTotalPrice - finalPrice) <= (finalPrice / 5))
             .Include(x => x.House)
             .ThenInclude(x => x.Images)
             .Include(x => x.House)

@@ -109,21 +109,40 @@
 										@{
 											foreach (Advertisement advertisement in Model.advertisements)
 											{
+												var imageUrl = advertisement.House?.Images?.FirstOrDefault()?.Url;
+												var backgroundImage = string.IsNullOrWhiteSpace(imageUrl)
+													? Url.Content("~/images/work-1.jpg")
+													: Url.Content($"~/images/{imageUrl}");
+												var floor = advertisement.House?.Floors?.FirstOrDefault();
+												var roomsValue = advertisement.House?.Floors?.Sum(x => x.RoomCount) ?? floor?.RoomCount ?? 0;
+												var bathsValue = advertisement.House?.Floors?.Sum(x => x.ToiletType?.Id == 1 ? 1 : 0) ?? 0;
+												var areaValue = advertisement.House?.BuildingArea ?? floor?.Area ?? 0;
 												<div class="col-md-4">
 													<div class="property-wrap ftco-animate">
 														<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id" class="img"
-														   style="background-image: url('@Url.Content($"~/images/{advertisement.House.Images.FirstOrDefault().Url}")');"></a>
+														   style="background-image: url('@backgroundImage');"></a>
 														<div class="text">
 															<p class="price"><span class="old-price">@advertisement.Deal.TotalPrice</span><span
 																class="orig-price">@advertisement.Deal.FinalTotalPrice<small>@Model.staticDatas.LastOrDefault(x
 																																																									=> x.Id == "E16").LocalizedContent(lang)</small></span></p>
-																<ul class="property_list">
-																	<li><span class="flaticon-bed"></span>@advertisement.House.FloorCount</li>
-																	<li><span class="flaticon-bathtub"></span>@advertisement.House.Floors.Sum(x =>
-																																																																																																																																																																																		x.ToiletType.Id == 1 ? 1 : 0)</li>
-																		<li><span class="flaticon-floor-plan"></span>@advertisement.House.Floors.Sum(x =>
-																																																																																																																																																																																												x.BalconyArea) Meter</li>
-																		</ul>
+																<div class="table-responsive mb-2">
+																	<table class="table table-sm table-borderless mb-0">
+																		<tbody>
+																			<tr>
+																				<td><span class="flaticon-bed mr-1"></span>Rooms</td>
+																				<td class="text-right">@roomsValue</td>
+																			</tr>
+																			<tr>
+																				<td><span class="flaticon-bathtub mr-1"></span>Bath</td>
+																				<td class="text-right">@bathsValue</td>
+																			</tr>
+																			<tr>
+																				<td><span class="flaticon-floor-plan mr-1"></span>Area</td>
+																				<td class="text-right">@areaValue.ToString("N0") Meter</td>
+																			</tr>
+																		</tbody>
+																	</table>
+																</div>
 																		<h3>
 																			@{
 																				if (lang == "fa")
@@ -140,7 +159,7 @@
 																				}
 																			}
 																		</h3>
-																		<span class="location">@advertisement.House.RegistrationTime</span>
+																		<span class="location">@(advertisement.House?.RegistrationTime.ToString("yyyy/MM/dd") ?? "-")</span>
 																		<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id" class="d-flex align-items-center justify-content-center btn-custom">
 																			<span class="ion-ios-link"></span>
 																		</a>
