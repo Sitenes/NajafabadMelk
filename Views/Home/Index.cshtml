@@ -1,8 +1,9 @@
-﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @model HomeViewModel
 @{
 	ViewData["Title"] = "Home";
-	var lang = Context.Items["lang"]?.ToString() ?? Context.Request.RouteValues["lang"]?.ToString() ?? "en";
+	HttpContext? httpContext = ViewContext?.HttpContext;
+	var lang = httpContext?.Items["lang"]?.ToString() ?? httpContext?.Request.RouteValues["lang"]?.ToString() ?? "en";
 	ViewData["Lang"] = lang;
 }
 
@@ -153,7 +154,7 @@
 										</section>
 
 										<section class="ftco-section ftco-degree-bg services-section img mx-md-5"
-												 style="background-image: url(images/bg_2.jpg);">
+												 style="background-image: url(/images/bg_2.jpg);">
 											<div class="overlay"></div>
 											<div class="p-5 m-5">
 												<div class="row justify-content-start mb-5">
@@ -224,7 +225,7 @@
 																<div class="container">
 																	<div class="row no-gutters">
 																		<div class="col-md-6 p-md-5 img img-2 d-flex justify-content-center align-items-center"
-																			 style="background-image: url(images/about.jpg);">
+																			 style="background-image: url(/images/about.jpg);">
 																		</div>
 																		<div class="col-md-6 wrap-about py-md-5 ftco-animate">
 																			<div class="heading-section p-md-5">
@@ -307,7 +308,7 @@
 																																<p class="mb-4">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																												"E48").LocalizedContent(lang)</p>
 																																	<div class="d-flex align-items-center">
-																																		<div class="user-img" style="background-image: url(images/person_1.jpg)"></div>
+																																		<div class="user-img" style="background-image: url(/images/person_1.jpg)"></div>
 																																		<div class="pl-3">
 																																			<p class="name">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																							"E49").LocalizedContent(lang)</p>
@@ -324,7 +325,7 @@
 																																			<p class="mb-4">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																					"E51").LocalizedContent(lang)</p>
 																																				<div class="d-flex align-items-center">
-																																					<div class="user-img" style="background-image: url(images/person_2.jpg)"></div>
+																																					<div class="user-img" style="background-image: url(/images/person_2.jpg)"></div>
 																																					<div class="pl-3">
 																																						<p class="name">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																																"E52").LocalizedContent(lang)</p>
@@ -341,7 +342,7 @@
 																																						<p class="mb-4">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																														"E54").LocalizedContent(lang)</p>
 																																							<div class="d-flex align-items-center">
-																																								<div class="user-img" style="background-image: url(images/person_3.jpg)"></div>
+																																								<div class="user-img" style="background-image: url(/images/person_3.jpg)"></div>
 																																								<div class="pl-3">
 																																									<p class="name">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																																									"E55").LocalizedContent(lang)</p>
@@ -358,7 +359,7 @@
 																																									<p class="mb-4">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																																							"E57").LocalizedContent(lang)</p>
 																																										<div class="d-flex align-items-center">
-																																											<div class="user-img" style="background-image: url(images/person_1.jpg)"></div>
+																																											<div class="user-img" style="background-image: url(/images/person_1.jpg)"></div>
 																																											<div class="pl-3">
 																																												<p class="name">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																																																		"E58").LocalizedContent(lang)</p>
@@ -375,7 +376,7 @@
 																																												<p class="mb-4">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																																																"E60").LocalizedContent(lang)</p>
 																																													<div class="d-flex align-items-center">
-																																														<div class="user-img" style="background-image: url(images/person_2.jpg)"></div>
+																																														<div class="user-img" style="background-image: url(/images/person_2.jpg)"></div>
 																																														<div class="pl-3">
 																																															<p class="name">@Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																																																																																																																											"E61").LocalizedContent(lang)</p>

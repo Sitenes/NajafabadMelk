@@ -1,126 +1,69 @@
-﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
-@model HomeViewModel
+﻿@model agentViewModel
 @{
-	ViewData["Title"] = "Home";
-	var lang = Context.Items["lang"]?.ToString() ?? Context.Request.RouteValues["lang"]?.ToString() ?? "en";
+	ViewData["Title"] = "Agent";
+	var httpContext = ViewContext?.HttpContext;
+	var lang = httpContext?.Items["lang"]?.ToString() ?? httpContext?.Request.RouteValues["lang"]?.ToString() ?? "en";
+	var staticDatas = Model.staticDatas ?? new List<StaticData>();
+	string StaticContent(string id, string fallback = "")
+	{
+		var item = staticDatas.LastOrDefault(x => x.Id == id);
+		if (item == null)
+		{
+			return fallback;
+		}
+
+		return lang switch
+		{
+			"fa" => item.StringContentFa ?? item.StringContentEn ?? fallback,
+			"ar" => item.StringContentAr ?? item.StringContentEn ?? fallback,
+			_ => item.StringContentEn ?? item.StringContentFa ?? fallback
+		};
+	}
+	ViewData["Lang"] = lang;
 }
 
 
-<section class="hero-wrap hero-wrap-2 ftco-degree-bg js-fullheight" style="background-image: url('images/bg_1.jpg');"
+<section class="hero-wrap  ftco-degree-bg js-fullheight" style="background-image: url('images/bg_1.jpg');"
 		 data-stellar-background-ratio="0.5">
 	<div class="overlay"></div>
 	<div class="container">
 		<div class="row no-gutters slider-text js-fullheight align-items-center justify-content-center">
 			<div class="col-md-9 ftco-animate pb-5 text-center">
-				<p class="breadcrumbs"><span class="mr-2"><a href="index.html">@Model.staticDatas.LastOrDefault(x => x.Id == "E99").LocalizedContent(lang) <i
-					class="ion-ios-arrow-forward"></i></a></span> <span>@Model.staticDatas.LastOrDefault(x => x.Id == "E134").LocalizedContent(lang) <i
-					class="ion-ios-arrow-forward"></i></span></p>
-					<h1 class="mb-3 bread">@Model.staticDatas.LastOrDefault(x => x.Id == "E135").LocalizedContent(lang)</h1>
+					<p class="breadcrumbs"><span class="mr-2"><a href="index.html">@StaticContent("E99") <i class="ion-ios-arrow-forward"></i></a></span>
+						<span>@StaticContent("E100") <i
+						class="ion-ios-arrow-forward"></i></span></p>
+							<h1 class="mb-3 bread">@StaticContent("E101")</h1>
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<section class="ftco-section ftco-agent">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-3">
-					<div class="agent">
-						<div class="img">
-							<img src="images/team-1.jpg" class="img-fluid" alt="Colorlib Template">
-						</div>
-						<div class="desc">
-							<h3><a href="properties.html">James Stallon</a></h3>
-							<p class="h-info"><span class="location">Listing</span> <span class="details">&mdash; 10
-								Properties</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-3">
-						<div class="agent">
-							<div class="img">
-								<img src="images/team-2.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<h3><a href="properties.html">James Stallon</a></h3>
-								<p class="h-info"><span class="location">Listing</span> <span class="details">&mdash; 10
-									Properties</span></p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="agent">
-								<div class="img">
-									<img src="images/team-3.jpg" class="img-fluid" alt="Colorlib Template">
-								</div>
-								<div class="desc">
-									<h3><a href="properties.html">James Stallon</a></h3>
-									<p class="h-info"><span class="location">Listing</span> <span class="details">&mdash; 10
-										Properties</span></p>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-3">
+		<section class="ftco-section ftco-agent">
+			<div class="container">
+				<div class="row">
+					@if (Model.agents?.Any() == true)
+					{
+						@foreach (var agent in Model.agents)
+						{
+							<div class="col-md-3 ftco-animate">
 								<div class="agent">
 									<div class="img">
-										<img src="images/team-4.jpg" class="img-fluid" alt="Colorlib Template">
+										<img src="~/images/@agent.ImageAddress" class="img-fluid" alt="@agent.LocalizedName(lang)">
 									</div>
 									<div class="desc">
-										<h3><a href="properties.html">James Stallon</a></h3>
-										<p class="h-info"><span class="position">Listing</span> <span class="details">&mdash; 10
-											Properties</span></p>
-										</div>
+										<h3><a href="#">@agent.LocalizedName(lang)</a></h3>
+										<p class="h-info"><span class="location">@agent.LocalizedExpert(lang)</span></p>
 									</div>
 								</div>
-
-								<div class="col-md-3">
-									<div class="agent">
-										<div class="img">
-											<img src="images/team-5.jpg" class="img-fluid" alt="Colorlib Template">
-										</div>
-										<div class="desc">
-											<h3><a href="properties.html">James Stallon</a></h3>
-											<p class="h-info"><span class="location">Listing</span> <span class="details">&mdash; 10
-												Properties</span></p>
-											</div>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="agent">
-											<div class="img">
-												<img src="images/team-6.jpg" class="img-fluid" alt="Colorlib Template">
-											</div>
-											<div class="desc">
-												<h3><a href="properties.html">James Stallon</a></h3>
-												<p class="h-info"><span class="location">Listing</span> <span class="details">&mdash; 10
-													Properties</span></p>
+							</div>
+						}
+					}
+					else
+					{
+						<div class="col-12 text-center">
+							<p>No agents available.</p>
+						</div>
+					}
 												</div>
 											</div>
-										</div>
-										<div class="col-md-3">
-											<div class="agent">
-												<div class="img">
-													<img src="images/team-7.jpg" class="img-fluid" alt="Colorlib Template">
-												</div>
-												<div class="desc">
-													<h3><a href="properties.html">James Stallon</a></h3>
-													<p class="h-info"><span class="location">Listing</span> <span class="details">&mdash; 10
-														Properties</span></p>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-3">
-												<div class="agent">
-													<div class="img">
-														<img src="images/team-8.jpg" class="img-fluid" alt="Colorlib Template">
-													</div>
-													<div class="desc">
-														<h3><a href="properties.html">James Stallon</a></h3>
-														<p class="h-info"><span class="position">Listing</span> <span class="details">&mdash; 10
-															Properties</span></p>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</section>
+										</section>

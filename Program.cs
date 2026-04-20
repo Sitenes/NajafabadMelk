@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+var rewriteOptions = new RewriteOptions()
+    .AddRewrite(@"^(fa|en|ar)/(images|css|js|fonts|lib)/(.*)$", "$2/$3", skipRemainingRules: true)
+    .AddRewrite(@"^(fa|en|ar)/(WebSite\.styles\.css)$", "$2", skipRemainingRules: true);
+
+app.UseRewriter(rewriteOptions);
+
 app.UseRouting();
 
 app.UseAuthorization();

@@ -1,14 +1,24 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebSite.Models;
 
 namespace WebSite.Controllers;
 
 public class propertiesSingleController : Controller
 {
-    public IActionResult Index()
+    private readonly RealEstateDbContext _context;
+
+    public propertiesSingleController(RealEstateDbContext context)
     {
-        return View();
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+               var viewModel = new propertiesSingleViewModel();
+        viewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
+        return View(viewModel);
     }
 
     public IActionResult services()
@@ -46,7 +56,7 @@ public class propertiesSingleController : Controller
         return View();
     }
 
-     public IActionResult about()
+    public IActionResult about()
     {
         return View();
     }

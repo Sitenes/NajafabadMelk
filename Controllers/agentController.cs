@@ -1,14 +1,25 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebSite.Models;
 
 namespace WebSite.Controllers;
 
 public class agentController : Controller
 {
-    public IActionResult Index()
+    private readonly RealEstateDbContext _context;
+
+    public agentController(RealEstateDbContext context)
     {
-        return View();
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var viewModel = new agentViewModel();
+        viewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
+        viewModel.agents = await _context.Agents.ToListAsync();
+        return View(viewModel);
     }
 
     public IActionResult services()
@@ -46,7 +57,7 @@ public class agentController : Controller
         return View();
     }
 
-     public IActionResult about()
+    public IActionResult about()
     {
         return View();
     }

@@ -45,58 +45,10 @@ public class HomeController : Controller
 
 
         ViewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
-        ViewModel.agents = await _context.Agents.Take(4).ToListAsync();
+        ViewModel.agents = await _context.Agents
+            .OrderBy(x => Guid.NewGuid())
+            .Take(4)
+            .ToListAsync();
         return View(ViewModel);
-    }
-
-    public IActionResult services()
-    {
-        return View();
-    }
-
-    public IActionResult propertiesSingle()
-    {
-        return View();
-    }
-
-    public IActionResult properties()
-    {
-        return View();
-    }
-
-    public IActionResult contact()
-    {
-        return View();
-    }
-
-    public IActionResult blogSingle()
-    {
-        return View();
-    }
-
-    public IActionResult blog()
-    {
-        return View();
-    }
-
-    public IActionResult agent()
-    {
-        return View();
-    }
-
-    public IActionResult about()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

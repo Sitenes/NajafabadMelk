@@ -1,8 +1,13 @@
-﻿@{
-	ViewData["Title"] = "Home";
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@model contactViewModel
+@{
+	ViewData["Title"] = "Contact";
+	var httpContext = ViewContext?.HttpContext;
+	var lang = httpContext?.Items["lang"]?.ToString() ?? httpContext?.Request.RouteValues["lang"]?.ToString() ?? "en";
+	ViewData["Lang"] = lang;
 }
 
-<section class="hero-wrap hero-wrap-2 ftco-degree-bg js-fullheight" style="background-image: url('images/bg_1.jpg');"
+<section class="hero-wrap  ftco-degree-bg js-fullheight" style="background-image: url('images/bg_1.jpg');"
 		 data-stellar-background-ratio="0.5">
 	<div class="overlay"></div>
 	<div class="container">

@@ -15,7 +15,7 @@ public class Agent
 
 public static class AgentExtensions
 {
-    public static string LocalizedName(this Agent agent, string lang)
+    public static string LocalizedName(this Agent? agent, string lang)
     {
         if (agent == null) return string.Empty;
 
@@ -27,7 +27,7 @@ public static class AgentExtensions
         };
     }
 
-    public static string LocalizedExpert(this Agent agent, string lang)
+    public static string LocalizedExpert(this Agent? agent, string lang)
     {
         if (agent == null) return string.Empty;
 

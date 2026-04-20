@@ -24,7 +24,7 @@ public class StaticDataGroup
 public static class StaticDataExtensions
 {
     // کلمه کلیدی this اینجا باعث می‌شود این متد به عنوان یک متد داخلی به StaticData اضافه شود
-    public static string LocalizedContent(this StaticData adv, string lang)
+    public static string LocalizedContent(this StaticData? adv, string lang)
     {
         if (adv == null) return string.Empty;
 
