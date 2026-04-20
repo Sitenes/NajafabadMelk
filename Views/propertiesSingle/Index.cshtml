@@ -4,6 +4,27 @@
 	ViewData["Title"] = "Properties";
 	var httpContext = ViewContext?.HttpContext;
 	var lang = httpContext?.Items["lang"]?.ToString() ?? httpContext?.Request.RouteValues["lang"]?.ToString() ?? "en";
+	var advertisement = Model.advertisement;
+	var house = advertisement?.House;
+	var floors = house?.Floors ?? new List<Floor>();
+	var firstFloor = floors.FirstOrDefault();
+	var imageUrl = house?.Images?.FirstOrDefault()?.Url;
+	var backgroundImage = string.IsNullOrWhiteSpace(imageUrl)
+		? Url.Content("~/images/work-1.jpg")
+		: Url.Content($"~/images/{imageUrl}");
+	var title = lang switch
+	{
+		"fa" => advertisement?.TitleFa ?? advertisement?.TitleEn ?? advertisement?.TitleAr ?? string.Empty,
+		"ar" => advertisement?.TitleAr ?? advertisement?.TitleEn ?? advertisement?.TitleFa ?? string.Empty,
+		_ => advertisement?.TitleEn ?? advertisement?.TitleFa ?? advertisement?.TitleAr ?? string.Empty
+	};
+	var description = lang switch
+	{
+		"fa" => advertisement?.DescriptionFa ?? advertisement?.DescriptionEn ?? advertisement?.DescriptionAr ?? string.Empty,
+		"ar" => advertisement?.DescriptionAr ?? advertisement?.DescriptionEn ?? advertisement?.DescriptionFa ?? string.Empty,
+		_ => advertisement?.DescriptionEn ?? advertisement?.DescriptionFa ?? advertisement?.DescriptionAr ?? string.Empty
+	};
+	var toiletCount = floors.Sum(x => x.ToiletType?.Id == 1 ? 1 : 0);
 	ViewData["Lang"] = lang;
 }
 
@@ -16,7 +37,7 @@
 				<p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home <i
 					class="ion-ios-arrow-forward"></i></a></span> <span>Properties <i
 					class="ion-ios-arrow-forward"></i></span></p>
-					<h1 class="mb-3 bread">Properties Single</h1>
+					<h1 class="mb-3 bread">@title</h1>
 				</div>
 			</div>
 		</div>
@@ -27,10 +48,10 @@
 			<div class="row justify-content-center">
 				<div class="col-md-12">
 					<div class="property-details">
-						<div class="img" style="background-image: url(/images/work-1.jpg);"></div>
+						<div class="img" style="background-image: url(@backgroundImage);"></div>
 						<div class="text text-center">
-							<span class="subheading">Oakland</span>
-							<h2>The Blue Sky Home</h2>
+							<span class="subheading">@(advertisement?.Deal?.FinalTotalPrice.ToString("N0") ?? "0")</span>
+							<h2>@title</h2>
 						</div>
 					</div>
 				</div>
@@ -64,32 +85,29 @@
 								<div class="row">
 									<div class="col-md-4">
 										<ul class="features">
-											<li class="check"><span class="ion-ios-checkmark"></span>Lot Area: 1,250 SQ FT
-											</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Bed Rooms: 4</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Bath Rooms: 4</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Luggage</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Garage: 2</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Total Area: @floors.Sum(x => x.Area).ToString("N0") sqft</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Bed Rooms: @floors.Sum(x => x.RoomCount)</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Bath Rooms: @toiletCount</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Floors: @(house?.FloorCount ?? 0)</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Parking: @(house?.HasParking == true ? (house.ParkingCount ?? 1) : 0)</li>
 										</ul>
 									</div>
 									<div class="col-md-4">
 										<ul class="features">
-											<li class="check"><span class="ion-ios-checkmark"></span>Floor Area: 1,300 SQ FT
-											</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Year Build:: 2019</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Water</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Stories: 2</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Roofing: New</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Floor Area: @((firstFloor?.Area ?? 0).ToString("N0")) sqft</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Construction: @(house?.ConstructionTime.ToString("yyyy") ?? "-")</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Direction: @(firstFloor?.ConstructionDirection ?? "-")</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Cooling: @(firstFloor?.CoolingStatus ?? "-")</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Heating: @(firstFloor?.HeatingStatus ?? "-")</li>
 										</ul>
 									</div>
 									<div class="col-md-4">
 										<ul class="features">
-											<li class="check"><span class="ion-ios-checkmark"></span>Floor Area: 1,300 SQ FT
-											</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Year Build:: 2019</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Water</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Stories: 2</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>Roofing: New</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Deal Type: @(advertisement?.Deal?.DealType?.Name ?? "-")</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Total Price: @(advertisement?.Deal?.TotalPrice.ToString("N0") ?? "0")</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Offer Price: @(advertisement?.Deal?.FinalTotalPrice.ToString("N0") ?? "0")</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Balcony Area: @floors.Sum(x => x.BalconyArea ?? 0).ToString("N0") sqm</li>
+											<li class="check"><span class="ion-ios-checkmark"></span>Registered: @(house?.RegistrationTime.ToString("yyyy/MM/dd") ?? "-")</li>
 										</ul>
 									</div>
 								</div>
@@ -97,13 +115,7 @@
 
 							<div class="tab-pane fade" id="pills-manufacturer" role="tabpanel"
 								 aria-labelledby="pills-manufacturer-tab">
-								<p>Even the all-powerful Pointing has no control about the blind texts it is an almost
-									unorthographic life One day however a small line of blind text by the name of Lorem
-									Ipsum decided to leave for the far World of Grammar.</p>
-									<p>When she reached the first hills of the Italic Mountains, she had a last view back on the
-										skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline
-										of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she
-										continued her way.</p>
+								<p>@description</p>
 									</div>
 
 									<div class="tab-pane fade" id="pills-review" role="tabpanel" aria-labelledby="pills-review-tab">

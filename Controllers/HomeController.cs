@@ -49,6 +49,11 @@ public class HomeController : Controller
             .OrderBy(x => Guid.NewGuid())
             .Take(4)
             .ToListAsync();
+        ViewModel.articles = await _context.Articles
+            .Where(x => x.IsPublished)
+            .OrderByDescending(x => x.PublishedAt)
+            .Take(4)
+            .ToListAsync();
         return View(ViewModel);
     }
 }

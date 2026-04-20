@@ -14,10 +14,30 @@ public class blogSingleController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int? id)
     {
         var viewModel = new blogSingleViewModel();
         viewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
+
+        var publishedArticles = _context.Articles
+            .Where(x => x.IsPublished)
+            .OrderByDescending(x => x.PublishedAt);
+
+        viewModel.article = id.HasValue
+            ? await publishedArticles.FirstOrDefaultAsync(x => x.Id == id.Value)
+            : await publishedArticles.FirstOrDefaultAsync();
+
+        if (viewModel.article == null)
+        {
+            return RedirectToAction("Index", "blog");
+        }
+
+        viewModel.recentArticles = await _context.Articles
+            .Where(x => x.IsPublished && x.Id != viewModel.article.Id)
+            .OrderByDescending(x => x.PublishedAt)
+            .Take(4)
+            .ToListAsync();
+
         return View(viewModel);
     }
 

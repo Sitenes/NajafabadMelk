@@ -111,7 +111,7 @@
 											{
 												<div class="col-md-4">
 													<div class="property-wrap ftco-animate">
-														<a asp-controller="propertiesSingle" asp-action="Index" class="img"
+														<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id" class="img"
 														   style="background-image: url('@Url.Content($"~/images/{advertisement.House.Images.FirstOrDefault().Url}")');"></a>
 														<div class="text">
 															<p class="price"><span class="old-price">@advertisement.Deal.TotalPrice</span><span
@@ -128,20 +128,20 @@
 																			@{
 																				if (lang == "fa")
 																				{
-																					<a href="#">@advertisement.TitleFa</a>
+																					<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id">@advertisement.TitleFa</a>
 																				}
 																				else if (lang == "ar")
 																				{
-																					<a href="#">@advertisement.TitleAr</a>
+																					<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id">@advertisement.TitleAr</a>
 																				}
 																				else
 																				{
-																					<a href="#">@advertisement.TitleEn</a>
+																					<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id">@advertisement.TitleEn</a>
 																				}
 																			}
 																		</h3>
 																		<span class="location">@advertisement.House.RegistrationTime</span>
-																		<a href="#" class="d-flex align-items-center justify-content-center btn-custom">
+																		<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id" class="d-flex align-items-center justify-content-center btn-custom">
 																			<span class="ion-ios-link"></span>
 																		</a>
 																	</div>
@@ -431,94 +431,24 @@
 																																													</div>
 																																												</div>
 																																												<div class="row d-flex">
-																																													<div class="col-md-3 d-flex ftco-animate">
-																																														<div class="blog-entry justify-content-end">
-																																															<div class="text">
-																																																<h3 class="heading"><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																		"E79").LocalizedContent(lang)</a></h3>
+																																													@foreach (var article in Model.articles)
+																																													{
+																																														<div class="col-md-3 d-flex ftco-animate">
+																																															<div class="blog-entry justify-content-end">
+																																																<div class="text">
+																																																	<h3 class="heading"><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.LocalizedTitle(lang)</a></h3>
 																																																	<div class="meta mb-3">
-																																																		<div><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																									"E80").LocalizedContent(lang)</a></div>
-																																																			<div><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																												"E81").LocalizedContent(lang)</a></div>
-																																																				<div><a href="#" class="meta-chat"><span class="icon-chat"></span>
-																																																					@Model.staticDatas.LastOrDefault(x => x.Id == "E82").LocalizedContent(lang)</a>
-																																																				</div>
-																																																			</div>
-																																																			<a href="blog-single.html" class="block-20 img"
-																																																				   style="background-image: url('images/image_1.jpg');">
-																																																			</a>
-																																																			<p>@Model.staticDatas.LastOrDefault(x => x.Id == "E83").LocalizedContent(lang)
-																																																			</p>
-																																																		</div>
+																																																		<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.PublishedAt.ToString("yyyy/MM/dd")</a></div>
+																																																		<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.AuthorName</a></div>
 																																																	</div>
+																																																	<a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id" class="block-20 img"
+																																																	   style="background-image: url('@Url.Content($"~/images/{article.ImageAddress}")');">
+																																																	</a>
+																																																	<p>@article.LocalizedSummary(lang)</p>
 																																																</div>
-																																																<div class="col-md-3 d-flex ftco-animate">
-																																																	<div class="blog-entry justify-content-end">
-																																																		<div class="text">
-																																																			<h3 class="heading"><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																											"E84").LocalizedContent(lang)</a></h3>
-																																																				<div class="meta mb-3">
-																																																					<div><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																																		"E85").LocalizedContent(lang)</a></div>
-																																																						<div><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																																					"E86").LocalizedContent(lang)</a></div>
-																																																							<div><a href="#" class="meta-chat"><span class="icon-chat"></span>
-																																																								@Model.staticDatas.LastOrDefault(x => x.Id == "E87").LocalizedContent(lang)</a>
-																																																							</div>
-																																																						</div>
-																																																						<a href="blog-single.html" class="block-20 img"
-																																																							   style="background-image: url('images/image_2.jpg');">
-																																																						</a>
-																																																						<p>@Model.staticDatas.LastOrDefault(x => x.Id == "E88").LocalizedContent(lang)
-																																																						</p>
-																																																					</div>
-																																																				</div>
-																																																			</div>
-																																																			<div class="col-md-3 d-flex ftco-animate">
-																																																				<div class="blog-entry justify-content-end">
-																																																					<div class="text">
-																																																						<h3 class="heading"><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																																				"E89").LocalizedContent(lang)</a></h3>
-																																																							<div class="meta mb-3">
-																																																								<div><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																																											"E90").LocalizedContent(lang)</a></div>
-																																																									<div><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																																														"E91").LocalizedContent(lang)</a></div>
-																																																										<div><a href="#" class="meta-chat"><span class="icon-chat"></span>
-																																																											@Model.staticDatas.LastOrDefault(x => x.Id == "E92").LocalizedContent(lang)</a>
-																																																										</div>
-																																																									</div>
-																																																									<a href="blog-single.html" class="block-20 img"
-																																																										   style="background-image: url('images/image_3.jpg');">
-																																																									</a>
-																																																									<p>@Model.staticDatas.LastOrDefault(x => x.Id == "E93").LocalizedContent(lang)
-																																																									</p>
-																																																								</div>
-																																																							</div>
-																																																						</div>
-																																																						<div class="col-md-3 d-flex ftco-animate">
-																																																							<div class="blog-entry justify-content-end">
-																																																								<div class="text">
-																																																									<h3 class="heading"><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																																													"E94").LocalizedContent(lang)</a></h3>
-																																																										<div class="meta mb-3">
-																																																											<div><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																																																				"E95").LocalizedContent(lang)</a></div>
-																																																												<div><a href="#">@Model.staticDatas.LastOrDefault(x => x.Id ==
-																																																																																																																																																																																																							"E96").LocalizedContent(lang)</a></div>
-																																																													<div><a href="#" class="meta-chat"><span class="icon-chat"></span>
-																																																														@Model.staticDatas.LastOrDefault(x => x.Id == "E97").LocalizedContent(lang)</a>
-																																																													</div>
-																																																												</div>
-																																																												<a href="blog-single.html" class="block-20 img"
-																																																													   style="background-image: url('images/image_4.jpg');">
-																																																												</a>
-																																																												<p>@Model.staticDatas.LastOrDefault(x => x.Id == "E98").LocalizedContent(lang)
-																																																												</p>
-																																																											</div>
-																																																										</div>
-																																																									</div>
+																																															</div>
+																																														</div>
+																																													}
 																																																								</div>
 																																																							</div>
 																																																						</section>

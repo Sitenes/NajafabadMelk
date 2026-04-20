@@ -16,8 +16,24 @@ public class blogController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var viewModel = new blogSingleViewModel();
+        const int pageSize = 8;
+        var page = HttpContext.Request.Query.TryGetValue("page", out var pageValues) && int.TryParse(pageValues.FirstOrDefault(), out var parsedPage)
+            ? parsedPage
+            : 1;
+        page = Math.Max(page, 1);
+
+        var viewModel = new blogViewModel();
         viewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
+        var publishedArticles = _context.Articles
+            .Where(x => x.IsPublished)
+            .OrderByDescending(x => x.PublishedAt);
+        viewModel.TotalCount = await publishedArticles.CountAsync();
+        viewModel.CurrentPage = page;
+        viewModel.PageSize = pageSize;
+        viewModel.articles = await publishedArticles
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
         return View(viewModel);
     }
 

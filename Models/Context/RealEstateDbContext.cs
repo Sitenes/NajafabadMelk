@@ -19,6 +19,7 @@ public class RealEstateDbContext : DbContext
     public DbSet<StaticData> staticDatas { get; set; }
     public DbSet<StaticDataGroup> staticDataGroups { get; set; }
     public DbSet<Agent> Agents { get; set; }
+    public DbSet<Article> Articles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
