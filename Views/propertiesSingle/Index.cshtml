@@ -10,289 +10,227 @@
 		"ar" => ar,
 		_ => en
 	};
+
 	var advertisement = Model.advertisement;
 	var house = advertisement?.House;
-	var floors = house?.Floors ?? new List<Floor>();
 	var deal = advertisement?.Deal;
-	var firstFloor = floors.FirstOrDefault();
-	var imageUrl = house?.Images?.FirstOrDefault()?.Url;
-	var backgroundImage = string.IsNullOrWhiteSpace(imageUrl)
-		? Url.Content("~/images/work-1.jpg")
-		: Url.Content($"~/images/{imageUrl}");
-	var galleryImages = house?.Images?.Select(x => Url.Content($"~/images/{x.Url}")).ToList() ?? new List<string>();
-	if (!galleryImages.Any())
-	{
-		galleryImages.Add(Url.Content("~/images/work-1.jpg"));
-	}
+	var floors = house?.Floors ?? new List<Floor>();
+
 	var title = lang switch
 	{
 		"fa" => advertisement?.TitleFa ?? advertisement?.TitleEn ?? advertisement?.TitleAr ?? string.Empty,
 		"ar" => advertisement?.TitleAr ?? advertisement?.TitleEn ?? advertisement?.TitleFa ?? string.Empty,
 		_ => advertisement?.TitleEn ?? advertisement?.TitleFa ?? advertisement?.TitleAr ?? string.Empty
 	};
+
 	var description = lang switch
 	{
 		"fa" => advertisement?.DescriptionFa ?? advertisement?.DescriptionEn ?? advertisement?.DescriptionAr ?? string.Empty,
 		"ar" => advertisement?.DescriptionAr ?? advertisement?.DescriptionEn ?? advertisement?.DescriptionFa ?? string.Empty,
 		_ => advertisement?.DescriptionEn ?? advertisement?.DescriptionFa ?? advertisement?.DescriptionAr ?? string.Empty
 	};
+
 	var amenities = lang switch
 	{
 		"fa" => house?.AmenitiesFa ?? house?.AmenitiesEn ?? house?.AmenitiesAr ?? string.Empty,
 		"ar" => house?.AmenitiesAr ?? house?.AmenitiesEn ?? house?.AmenitiesFa ?? string.Empty,
 		_ => house?.AmenitiesEn ?? house?.AmenitiesFa ?? house?.AmenitiesAr ?? string.Empty
 	};
-	var toiletCount = floors.Sum(x => x.ToiletType?.Id == 1 ? 1 : 0);
-	var totalArea = floors.Sum(x => x.Area);
-	var totalRooms = floors.Sum(x => x.RoomCount);
-	var totalCapacity = floors.Sum(x => x.Capacity);
-	var totalBalconyArea = floors.Sum(x => x.BalconyArea ?? 0);
-	var totalStorageArea = floors.Sum(x => x.StorageArea ?? 0);
-	var floorMaterials = floors
-		.SelectMany(x => x.FloorMaterials)
-		.Select(x => lang switch
-		{
-			"fa" => x.ContentFa ?? x.Name,
-			"ar" => x.ContentAr ?? x.Name,
-			_ => x.ContentEn ?? x.Name
-		})
-		.Where(x => !string.IsNullOrWhiteSpace(x))
-		.Distinct()
-		.ToList();
+
+	var galleryImages = house?.Images?.Select(x => Url.Content($"~/images/{x.Url}")).ToList() ?? new List<string>();
+	if (!galleryImages.Any())
+	{
+		galleryImages.Add(Url.Content("~/images/work-1.jpg"));
+	}
+	var mainImage = galleryImages.First();
+
 	var hasOffer = deal?.HaveOffer == true && deal.FinalTotalPrice > 0;
 	var totalPrice = deal?.TotalPrice ?? 0;
 	var finalPrice = hasOffer ? deal?.FinalTotalPrice ?? totalPrice : totalPrice;
 	var priceDiscountPercent = hasOffer && totalPrice > 0 && finalPrice < totalPrice
 		? (int)Math.Round((1m - (finalPrice / totalPrice)) * 100m)
 		: 0;
+
 	var locationParts = new[] { house?.City, house?.District, house?.Neighborhood }
 		.Where(x => !string.IsNullOrWhiteSpace(x))
 		.ToList();
 	var locationText = locationParts.Any() ? string.Join(" - ", locationParts) : T("Location not specified", "موقعیت ثبت نشده", "الموقع غير محدد");
+
+	var totalArea = floors.Sum(x => x.Area);
+	var totalRooms = floors.Sum(x => x.RoomCount);
+	var toiletCount = floors.Sum(x => x.ToiletType?.Id == 1 ? 1 : 0);
+	var totalCapacity = floors.Sum(x => x.Capacity);
+
 	ViewData["Lang"] = lang;
 }
 
-<section class="hero-wrap  ftco-degree-bg js-fullheight" style="background-image: url('images/bg_1.jpg');"
-		 data-stellar-background-ratio="0.5">
+<section class="hero-wrap hero-wrap-2 ftco-degree-bg js-fullheight" style="background-image: url('@mainImage');" data-stellar-background-ratio="0.5">
 	<div class="overlay"></div>
 	<div class="container">
 		<div class="row no-gutters slider-text js-fullheight align-items-center justify-content-center">
 			<div class="col-md-9 ftco-animate pb-5 text-center">
-				<p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home <i
-					class="ion-ios-arrow-forward"></i></a></span> <span>Properties <i
-					class="ion-ios-arrow-forward"></i></span></p>
-					<h1 class="mb-3 bread">@title</h1>
-				</div>
+				<p class="breadcrumbs">
+					<span class="mr-2"><a asp-controller="Home" asp-action="Index">@T("Home", "خانه", "الرئيسية") <i class="ion-ios-arrow-forward"></i></a></span>
+					<span>@T("Property", "ملک", "العقار") <i class="ion-ios-arrow-forward"></i></span>
+				</p>
+				<h1 class="mb-3 bread">@title</h1>
 			</div>
 		</div>
-	</section>
+	</div>
+</section>
 
-	<section class="ftco-section ftco-property-details">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-12">
-					<div class="property-details">
-						<div class="img" style="background-image: url(@backgroundImage);"></div>
-						<div class="text text-center">
-							<span class="subheading">@finalPrice.ToString("N0")</span>
-							<h2>@title</h2>
-							<p class="mb-0">@locationText</p>
-							@if (priceDiscountPercent > 0)
-							{
-								<p class="mt-2 mb-0 text-danger">@T("Discount", "تخفیف", "خصم") @priceDiscountPercent%</p>
-							}
-						</div>
+<section class="ftco-section ftco-property-details">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-7 mb-4">
+				<div class="bg-white p-3 shadow-sm" style="position: sticky; top: 110px;">
+					<div class="mb-3">
+						<img id="mainPropertyImage" src="@mainImage" alt="@title" style="width: 100%; height: 460px; object-fit: cover; border-radius: 8px;" />
 					</div>
-					<div class="row mt-3">
-						@foreach (var galleryImage in galleryImages.Take(6))
+					<div class="row">
+						@for (var i = 0; i < galleryImages.Count; i++)
 						{
-							<div class="col-6 col-md-2 mb-3">
-								<div class="img" style="height: 90px; background-size: cover; background-position: center; border-radius: 6px; background-image: url('@galleryImage');"></div>
+							var thumb = galleryImages[i];
+							<div class="col-4 col-md-3 mb-3">
+								<button type="button" class="property-thumb-btn" data-image="@thumb" style="display: block; width: 100%; border: 0; padding: 0; background: transparent; cursor: pointer;">
+									<img src="@thumb" alt="thumb-@i" style="width: 100%; height: 95px; object-fit: cover; border-radius: 6px; border: 2px solid @(i == 0 ? "#e86ed0" : "#e6e6e6");" />
+								</button>
 							</div>
 						}
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12 pills">
-					<div class="bd-example bd-example-tabs">
-						<div class="d-flex justify-content-center">
-							<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 
-								<li class="nav-item">
-									<a class="nav-link active" id="pills-description-tab" data-toggle="pill"
-									   href="#pills-description" role="tab" aria-controls="pills-description"
-									   aria-expanded="true">@T("Features", "ویژگی ها", "المميزات")</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" id="pills-manufacturer-tab" data-toggle="pill"
-									   href="#pills-manufacturer" role="tab" aria-controls="pills-manufacturer"
-									   aria-expanded="true">@T("Financial", "مالی", "المالية")</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" id="pills-review-tab" data-toggle="pill" href="#pills-review"
-									   role="tab" aria-controls="pills-review" aria-expanded="true">@T("Description", "توضیحات", "الوصف")</a>
-								</li>
-							</ul>
-						</div>
-
-						<div class="tab-content" id="pills-tabContent">
-							<div class="tab-pane fade show active" id="pills-description" role="tabpanel"
-								 aria-labelledby="pills-description-tab">
-								<div class="row">
-									<div class="col-md-4">
-										<ul class="features">
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Total Area", "متراژ کل", "المساحة الكلية"): @totalArea.ToString("N0") sqft</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Land Area", "متراژ زمین", "مساحة الأرض"): @((house?.LandArea ?? 0).ToString("N0")) sqm</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Building Area", "متراژ بنا", "مساحة البناء"): @((house?.BuildingArea ?? totalArea).ToString("N0")) sqm</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Rooms", "تعداد اتاق", "عدد الغرف"): @totalRooms</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Bath Rooms", "حمام", "الحمامات"): @toiletCount</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Capacity", "ظرفیت", "السعة"): @totalCapacity</li>
-										</ul>
-									</div>
-									<div class="col-md-4">
-										<ul class="features">
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Floor Count", "تعداد طبقات", "عدد الطوابق"): @(house?.FloorCount ?? floors.Count)</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Unit Number", "شماره واحد", "رقم الوحدة"): @(house?.UnitNumber?.ToString() ?? "-")</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Construction", "سال ساخت", "سنة البناء"): @(house?.ConstructionTime.Year > 1900 ? house.ConstructionTime.ToString("yyyy") : "-")</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Renovated", "سال بازسازی", "سنة التجديد"): @(house?.YearRenovated?.ToString() ?? "-")</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Direction", "جهت", "الاتجاه"): @(firstFloor?.ConstructionDirection ?? "-")</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Deed", "نوع سند", "نوع السند"): @(house?.Deed ?? "-")</li>
-										</ul>
-									</div>
-									<div class="col-md-4">
-										<ul class="features">
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Parking", "پارکینگ", "موقف سيارات"): @(house?.HasParking == true ? (house.ParkingCount ?? 1) : 0)</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Elevator", "آسانسور", "مصعد"): @(house?.HasElevator == true ? T("Yes", "دارد", "نعم") : T("No", "ندارد", "لا"))</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Pool", "استخر", "مسبح"): @(house?.HasPool == true ? (house.PoolArea?.ToString("N0") ?? "0") + " sqm" : "-")</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Balcony Area", "مساحت بالکن", "مساحة الشرفة"): @totalBalconyArea.ToString("N0") sqm</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Storage Area", "مساحت انباری", "مساحة التخزين"): @totalStorageArea.ToString("N0") sqm</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Registered", "تاریخ ثبت", "تاريخ التسجيل"): @(house?.RegistrationTime.ToString("yyyy/MM/dd") ?? "-")</li>
-										</ul>
-									</div>
-								</div>
-								<div class="row mt-4">
-									<div class="col-md-12">
-										<p><strong>@T("Address", "آدرس", "العنوان"):</strong> @(string.IsNullOrWhiteSpace(house?.AddressLine) ? "-" : house.AddressLine)</p>
-										<p><strong>@T("Nearby Facilities", "امکانات نزدیک", "المرافق القريبة"):</strong> @(string.IsNullOrWhiteSpace(house?.NearbyFacilities) ? "-" : house.NearbyFacilities)</p>
-										@if (floorMaterials.Any())
-										{
-											<p><strong>@T("Floor Materials", "متریال کف", "مواد الأرضيات"):</strong> @string.Join(" - ", floorMaterials)</p>
-										}
-									</div>
-								</div>
-							</div>
-
-							<div class="tab-pane fade" id="pills-manufacturer" role="tabpanel"
-								 aria-labelledby="pills-manufacturer-tab">
-								<div class="row">
-									<div class="col-md-6">
-										<ul class="features">
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Deal Type", "نوع معامله", "نوع الصفقة"): @(deal?.DealType?.Name ?? "-")</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Initial Price", "قیمت اولیه", "السعر الأساسي"): @totalPrice.ToString("N0")</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Final Price", "قیمت نهایی", "السعر النهائي"): @finalPrice.ToString("N0")</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Offer Active", "دارای تخفیف", "يوجد عرض"): @(hasOffer ? T("Yes", "بله", "نعم") : T("No", "خیر", "لا"))</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Exchangeable", "قابل معاوضه", "قابل للمبادلة"): @(deal?.IsExchangeable == true ? T("Yes", "بله", "نعم") : T("No", "خیر", "لا"))</li>
-										</ul>
-									</div>
-									<div class="col-md-6">
-										<ul class="features">
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Down Payment", "پیش پرداخت", "الدفعة المقدمة"): @((deal?.DownPayment ?? 0).ToString("N0"))</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Monthly Payment", "پرداخت ماهانه", "الدفع الشهري"): @((deal?.MonthlyPayment ?? 0).ToString("N0"))</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Offer Down Payment", "پیش پرداخت تخفیفی", "دفعة العرض"): @((deal?.FinalDownPayment ?? 0).ToString("N0"))</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Offer Monthly Payment", "قسط ماهانه تخفیفی", "قسط العرض الشهري"): @((deal?.FinalMonthlyPayment ?? 0).ToString("N0"))</li>
-											<li class="check"><span class="ion-ios-checkmark"></span>@T("Property Code", "کد ملک", "رمز العقار"): @(string.IsNullOrWhiteSpace(house?.PropertyCode) ? "-" : house.PropertyCode)</li>
-										</ul>
-									</div>
-								</div>
-									</div>
-
-									<div class="tab-pane fade" id="pills-review" role="tabpanel" aria-labelledby="pills-review-tab">
-								<p>@description</p>
-								@if (!string.IsNullOrWhiteSpace(amenities))
-								{
-									<p><strong>@T("Amenities", "امکانات", "المرافق"):</strong> @amenities</p>
-								}
-								@if (advertisement?.Keywords?.Any() == true)
-								{
-									<div class="mt-3">
-										<strong>@T("Keywords", "کلمات کلیدی", "الكلمات المفتاحية"):</strong>
-										@foreach (var keyword in advertisement.Keywords)
-										{
-											var tagText = lang switch
-											{
-												"fa" => keyword.ContentFa ?? keyword.ContentEn ?? keyword.ContentAr,
-												"ar" => keyword.ContentAr ?? keyword.ContentEn ?? keyword.ContentFa,
-												_ => keyword.ContentEn ?? keyword.ContentFa ?? keyword.ContentAr
-											};
-											if (!string.IsNullOrWhiteSpace(tagText))
-											{
-												<span class="badge badge-light mr-2">@tagText</span>
-											}
-										}
-									</div>
-								}
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-
-			@if (floors.Any())
-			{
-				<div class="row mt-5">
-					<div class="col-md-12">
-						<h4 class="mb-4">@T("Floor Details", "جزئیات طبقات", "تفاصيل الطوابق")</h4>
-					</div>
-					@foreach (var floor in floors)
+			<div class="col-lg-5 mb-4">
+				<div class="bg-white p-4 shadow-sm mb-4">
+					<h3 class="mb-2">@title</h3>
+					<p class="text-muted mb-3">@locationText</p>
+					<p class="h4 mb-0">@finalPrice.ToString("N0")</p>
+					@if (hasOffer)
 					{
-						<div class="col-md-6 mb-4">
-							<div class="p-4 border rounded">
-								<h5>@T("Floor", "طبقه", "الطابق") #@floor.Id</h5>
-								<ul class="features">
-									<li class="check"><span class="ion-ios-checkmark"></span>@T("Area", "متراژ", "المساحة"): @floor.Area.ToString("N0") sqft</li>
-									<li class="check"><span class="ion-ios-checkmark"></span>@T("Rooms", "اتاق", "الغرف"): @floor.RoomCount</li>
-									<li class="check"><span class="ion-ios-checkmark"></span>@T("Capacity", "ظرفیت", "السعة"): @floor.Capacity</li>
-									<li class="check"><span class="ion-ios-checkmark"></span>@T("Cooling", "سرمایش", "التبريد"): @(floor.CoolingStatus ?? "-")</li>
-									<li class="check"><span class="ion-ios-checkmark"></span>@T("Heating", "گرمایش", "التدفئة"): @(floor.HeatingStatus ?? "-")</li>
-									<li class="check"><span class="ion-ios-checkmark"></span>@T("Hot Water", "آب گرم", "المياه الساخنة"): @(floor.HotWaterStatus ?? "-")</li>
-								</ul>
-							</div>
+						<p class="mb-2">
+							<span class="text-muted" style="text-decoration: line-through;">@totalPrice.ToString("N0")</span>
+							@if (priceDiscountPercent > 0)
+							{
+								<span class="badge badge-danger ml-2">@T("Discount", "تخفیف", "خصم") @priceDiscountPercent%</span>
+							}
+						</p>
+					}
+
+					<ul class="features mt-3 mb-0" style="list-style: none; padding-left: 0;">
+						<li><span class="flaticon-floor-plan mr-1"></span>@T("Total Area", "متراژ کل", "المساحة الكلية"): @totalArea.ToString("N0") sqft</li>
+						<li><span class="flaticon-bed mr-1"></span>@T("Rooms", "اتاق", "الغرف"): @totalRooms</li>
+						<li><span class="flaticon-bathtub mr-1"></span>@T("Bath Rooms", "حمام", "الحمامات"): @toiletCount</li>
+						<li><span class="ion-ios-people mr-1"></span>@T("Capacity", "ظرفیت", "السعة"): @totalCapacity</li>
+						<li><span class="ion-ios-pricetag mr-1"></span>@T("Property Code", "کد ملک", "رمز العقار"): @(string.IsNullOrWhiteSpace(house?.PropertyCode) ? "-" : house.PropertyCode)</li>
+					</ul>
+				</div>
+
+				<div class="bg-white p-4 shadow-sm mb-4">
+					<h4 class="mb-3">@T("Financial", "مالی", "المالية")</h4>
+					<ul class="features mb-0" style="list-style: none; padding-left: 0;">
+						<li><span class="ion-ios-swap mr-1"></span>@T("Deal Type", "نوع معامله", "نوع الصفقة"): @(deal?.DealType?.Name ?? "-")</li>
+						<li><span class="ion-logo-usd mr-1"></span>@T("Initial Price", "قیمت اولیه", "السعر الأساسي"): @totalPrice.ToString("N0")</li>
+						<li><span class="ion-ios-cash mr-1"></span>@T("Final Price", "قیمت نهایی", "السعر النهائي"): @finalPrice.ToString("N0")</li>
+						<li><span class="ion-ios-card mr-1"></span>@T("Down Payment", "پیش پرداخت", "الدفعة المقدمة"): @((deal?.DownPayment ?? 0).ToString("N0"))</li>
+						<li><span class="ion-ios-calendar mr-1"></span>@T("Monthly Payment", "پرداخت ماهانه", "الدفع الشهري"): @((deal?.MonthlyPayment ?? 0).ToString("N0"))</li>
+						<li><span class="ion-ios-pricetag mr-1"></span>@T("Offer Down Payment", "پیش پرداخت تخفیفی", "دفعة العرض"): @((deal?.FinalDownPayment ?? 0).ToString("N0"))</li>
+						<li><span class="ion-ios-pricetags mr-1"></span>@T("Offer Monthly Payment", "قسط ماهانه تخفیفی", "قسط العرض الشهري"): @((deal?.FinalMonthlyPayment ?? 0).ToString("N0"))</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="row mt-2">
+			<div class="col-md-12">
+				<div class="bg-white p-4 shadow-sm">
+					<h4 class="mb-3">@T("Description", "توضیحات", "الوصف")</h4>
+					<p>@description</p>
+					@if (!string.IsNullOrWhiteSpace(amenities))
+					{
+						<p class="mb-2"><strong>@T("Amenities", "امکانات", "المرافق"):</strong> @amenities</p>
+					}
+					@if (advertisement?.Keywords?.Any() == true)
+					{
+						<div>
+							<strong>@T("Keywords", "کلمات کلیدی", "الكلمات المفتاحية"):</strong>
+							@foreach (var keyword in advertisement.Keywords)
+							{
+								var tagText = lang switch
+								{
+									"fa" => keyword.ContentFa ?? keyword.ContentEn ?? keyword.ContentAr,
+									"ar" => keyword.ContentAr ?? keyword.ContentEn ?? keyword.ContentFa,
+									_ => keyword.ContentEn ?? keyword.ContentFa ?? keyword.ContentAr
+								};
+								if (!string.IsNullOrWhiteSpace(tagText))
+								{
+									<span class="badge mr-2" style="background-color: #d6eeff; color: #0b4d7a;">@tagText</span>
+								}
+							}
 						</div>
 					}
 				</div>
-			}
+			</div>
+		</div>
 
-			@if (Model.relatedAdvertisements.Any())
-			{
-				<div class="row mt-5">
-					<div class="col-md-12">
-						<h4 class="mb-4">@T("Similar Properties", "املاک مشابه", "عقارات مشابهة")</h4>
-					</div>
-					@foreach (var item in Model.relatedAdvertisements)
+		@if (Model.relatedAdvertisements.Any())
+		{
+			<div class="row mt-5">
+				<div class="col-md-12">
+					<h4 class="mb-4">@T("Similar Properties", "املاک مشابه", "عقارات مشابهة")</h4>
+				</div>
+				@foreach (var item in Model.relatedAdvertisements)
+				{
+					var cardTitle = lang switch
 					{
-						var cardTitle = lang switch
-						{
-							"fa" => item.TitleFa ?? item.TitleEn ?? item.TitleAr ?? string.Empty,
-							"ar" => item.TitleAr ?? item.TitleEn ?? item.TitleFa ?? string.Empty,
-							_ => item.TitleEn ?? item.TitleFa ?? item.TitleAr ?? string.Empty
-						};
-						var cardImage = item.House?.Images?.FirstOrDefault()?.Url;
-						var cardBackground = string.IsNullOrWhiteSpace(cardImage)
-							? Url.Content("~/images/work-1.jpg")
-							: Url.Content($"~/images/{cardImage}");
-						<div class="col-md-4">
-							<div class="property-wrap ftco-animate">
-								<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@item.Id" class="img"
-								   style="background-image: url('@cardBackground');"></a>
-								<div class="text">
-									<p class="price"><span class="orig-price">@item.Deal?.FinalTotalPrice.ToString("N0")</span></p>
-									<h3><a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@item.Id">@cardTitle</a></h3>
-								</div>
+						"fa" => item.TitleFa ?? item.TitleEn ?? item.TitleAr ?? string.Empty,
+						"ar" => item.TitleAr ?? item.TitleEn ?? item.TitleFa ?? string.Empty,
+						_ => item.TitleEn ?? item.TitleFa ?? item.TitleAr ?? string.Empty
+					};
+					var cardImage = item.House?.Images?.FirstOrDefault()?.Url;
+					var cardBackground = string.IsNullOrWhiteSpace(cardImage)
+						? Url.Content("~/images/work-1.jpg")
+						: Url.Content($"~/images/{cardImage}");
+					<div class="col-md-4">
+						<div class="property-wrap ftco-animate">
+							<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@item.Id" class="img" style="background-image: url('@cardBackground');"></a>
+							<div class="text">
+								<p class="price"><span class="orig-price">@item.Deal?.FinalTotalPrice.ToString("N0")</span></p>
+								<h3><a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@item.Id">@cardTitle</a></h3>
 							</div>
 						</div>
+					</div>
+				}
+			</div>
+		}
+	</div>
+</section>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		var mainImage = document.getElementById("mainPropertyImage");
+		var thumbs = document.querySelectorAll(".property-thumb-btn");
+
+		thumbs.forEach(function (btn) {
+			btn.addEventListener("click", function () {
+				var src = btn.getAttribute("data-image");
+				if (!src || !mainImage) {
+					return;
+				}
+
+				mainImage.setAttribute("src", src);
+				thumbs.forEach(function (otherBtn) {
+					var img = otherBtn.querySelector("img");
+					if (img) {
+						img.style.border = "2px solid #e6e6e6";
 					}
-				</div>
-			}
-										</div>
-									</section>
+				});
+
+				var selectedImg = btn.querySelector("img");
+				if (selectedImg) {
+					selectedImg.style.border = "2px solid #e86ed0";
+				}
+			});
+		});
+	});
+</script>
