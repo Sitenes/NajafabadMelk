@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); // نام کانکشن استرینگ را از appsettings.json بخوانید
 builder.Services.AddDbContext<RealEstateDbContext>(options =>
     options.UseSqlServer(connectionString));
-    
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,5 +44,10 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RealEstateDbContext>();
 
+    await db.Database.MigrateAsync();
+}
 app.Run();

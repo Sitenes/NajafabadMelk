@@ -102,6 +102,10 @@ jobs:
 
             cd "$APP_DIR/out"
 
+            echo "Current directory:"
+            pwd
+            echo "Files:"
+            ls -lah
             chmod +x "$APP_NAME"
 
             echo "Starting app..."
