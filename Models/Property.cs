@@ -239,11 +239,11 @@ public class Property
 
     public List<Floor> Floors { get; set; } = new();
 
-    public List<Picture> Pictures { get; set; } = new();
+    // public List<Picture> Pictures { get; set; } = new();
 
-    public List<InsertedPropertyFacility> Facilities { get; set; } = new();
+    // public List<InsertedPropertyFacility> Facilities { get; set; } = new();
 
-    public List<InsertedPropertyExtraItem> ExtraItems { get; set; } = new();
+    // public List<InsertedPropertyExtraItem> ExtraItems { get; set; } = new();
 
-    public List<InsertedPropertyTag> Tags { get; set; } = new();
+    // public List<InsertedPropertyTag> Tags { get; set; } = new();
 }
