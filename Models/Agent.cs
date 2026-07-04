@@ -5,11 +5,15 @@ public class Agent
     public string NameFa { get; set; } = string.Empty;
     public string NameEn { get; set; } = string.Empty;
     public string NameAr { get; set; } = string.Empty;
-
     public string ExpertFa { get; set; } = string.Empty;
     public string ExpertEn { get; set; } = string.Empty;
     public string ExpertAr { get; set; } = string.Empty;
-
+    public string? Username { get; set; }
+    public string? Password { get; set; }
+    public string? Post { get; set; }
+    public int? LastLoginDate { get; set; }
+    public int? IsMaster { get; set; }
+    public bool IsActive { get; set; }
     public string ImageAddress { get; set; } = string.Empty;
 }
 

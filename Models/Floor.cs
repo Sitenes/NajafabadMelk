@@ -15,13 +15,17 @@ public class Floor
     public string CoolingStatus { get; set; }
     public string HeatingStatus { get; set; }
     public string HotWaterStatus { get; set; }
-
+    public string? FloorNo { get; set; }
+    public short? Infrastructure { get; set; }
+    public string? Water { get; set; }
+    public string? Electricity { get; set; }
+    public string? Gas { get; set; }
+    public string? Phone { get; set; }
+    public string? Description { get; set; }
     //Relation ---------------------------
     public int ToiletTypeId { get; set; }
     public Status ToiletType { get; set; }
-
     public int HouseId { get; set; }
     public House House { get; set; }
-
     public List<Material> FloorMaterials { get; set; } = new List<Material>();
 }
