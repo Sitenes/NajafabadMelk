@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - main
 
 env:
   DOTNET_VERSION: "10.0.x"
