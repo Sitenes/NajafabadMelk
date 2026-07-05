@@ -4,3 +4,4 @@ bin/
 
 # Ignore Properties folder (often contains settings files, etc.)
 Properties/
+appsettings.json
