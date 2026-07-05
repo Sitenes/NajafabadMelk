@@ -119,3 +119,5 @@ jobs:
             echo $! > "$PID_FILE"
 
             echo "Started PID: $(cat $PID_FILE)"
+            sleep 2
+            tail --pid=$(cat "$PID_FILE") -f "$LOG_FILE"
