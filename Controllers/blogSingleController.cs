@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSite.Models;
+using WebSite.ViewModels;
 
 namespace WebSite.Controllers;
 
@@ -17,26 +18,26 @@ public class blogSingleController : Controller
     public async Task<IActionResult> Index(int? id)
     {
         var viewModel = new blogSingleViewModel();
-        viewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
-
-        var publishedArticles = _context.Articles
-            .Where(x => x.IsPublished)
-            .OrderByDescending(x => x.PublishedAt);
-
-        viewModel.article = id.HasValue
-            ? await publishedArticles.FirstOrDefaultAsync(x => x.Id == id.Value)
-            : await publishedArticles.FirstOrDefaultAsync();
+        viewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
+        viewModel.article = await _context.Properties
+            .Include(x => x.AdvertisementRelations)
+                .ThenInclude(r => r.Advertisement)
+            .Include(x => x.PropertyImageRelations)
+                .ThenInclude(r => r.PropertyImage)
+            .FirstOrDefaultAsync(x => x.Id == id) ?? await _context.Properties.FirstOrDefaultAsync();
+        
+        viewModel.recentArticles = await _context.Properties
+            .Include(x => x.AdvertisementRelations)
+                .ThenInclude(r => r.Advertisement)
+            .Include(x => x.PropertyImageRelations)
+                .ThenInclude(r => r.PropertyImage)
+            .Take(4)
+            .ToListAsync();
 
         if (viewModel.article == null)
         {
             return RedirectToAction("Index", "blog");
         }
-
-        viewModel.recentArticles = await _context.Articles
-            .Where(x => x.IsPublished && x.Id != viewModel.article.Id)
-            .OrderByDescending(x => x.PublishedAt)
-            .Take(4)
-            .ToListAsync();
 
         return View(viewModel);
     }

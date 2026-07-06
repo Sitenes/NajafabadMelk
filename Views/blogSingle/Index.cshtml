@@ -21,7 +21,7 @@ var article = Model.article;
 }
 else
 {
-<section class="hero-wrap  ftco-degree-bg js-fullheight" style="background-image: url('@Url.Content($"~/images/{article.ImageAddress}")');"
+<section class="hero-wrap  ftco-degree-bg js-fullheight" style="background-image: url('@Url.Content($"~/images/{article.ImageAddress()}")');"
  data-stellar-background-ratio="0.5">
 <div class="overlay"></div>
 <div class="container">
@@ -43,10 +43,10 @@ class="ion-ios-arrow-forward"></i></span></p>
 <div class="col-md-8 order-md-last ftco-animate">
 <h2 class="mb-3">@article.LocalizedTitle(lang)</h2>
 <div class="meta mb-3">
-<div>@article.PublishedAt.ToString("yyyy/MM/dd")</div>
-<div>@article.AuthorName</div>
+<div>@article.PublishedAt().ToString("yyyy/MM/dd")</div>
+<div>@article.AuthorName()</div>
 </div>
-<p>@article.LocalizedContent(lang)</p>
+<p>@article.LocalizedDescription(lang)</p>
 </div>
 <div class="col-md-4 sidebar ftco-animate">
 <div class="sidebar-box ftco-animate">
@@ -54,12 +54,12 @@ class="ion-ios-arrow-forward"></i></span></p>
 @foreach (var recent in Model.recentArticles)
 {
 <div class="block-21 mb-4 d-flex">
-<a class="blog-img mr-4" style="background-image: url('@Url.Content($"~/images/{recent.ImageAddress}")');"></a>
+<a class="blog-img mr-4" style="background-image: url('@Url.Content($"~/images/{recent.ImageAddress()}")');"></a>
 <div class="text">
 <h3 class="heading"><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@recent.Id">@recent.LocalizedTitle(lang)</a></h3>
 <div class="meta">
-<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@recent.Id"><span class="icon-calendar"></span> @recent.PublishedAt.ToString("yyyy/MM/dd")</a></div>
-<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@recent.Id"><span class="icon-person"></span> @recent.AuthorName</a></div>
+<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@recent.Id"><span class="icon-calendar"></span> @recent.PublishedAt().ToString("yyyy/MM/dd")</a></div>
+<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@recent.Id"><span class="icon-person"></span> @recent.AuthorName()</a></div>
 </div>
 </div>
 </div>

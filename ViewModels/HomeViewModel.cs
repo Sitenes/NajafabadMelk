@@ -1,11 +1,15 @@
 using System.ComponentModel.DataAnnotations; // برای Data Annotations
+using WebSite.Models;
+
+namespace WebSite.ViewModels;
+
 public class HomeViewModel
 {
-    public int advertisementsCount { get; set; }
-    public List<Advertisement> advertisements { get; set; } = new List<Advertisement>();
+    public int propertyCount { get; set; }
+    public List<Property> properties { get; set; } = new List<Property>();
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public List<Agent> agents { get; set; } = new List<Agent>();
-    public List<Article> articles { get; set; } = new List<Article>();
+    public List<User> agents { get; set; } = new List<User>();
+    public List<Property> articles { get; set; } = new List<Property>(); // Using Property as placeholder for now
 }
 
 public class aboutViewModel
@@ -15,25 +19,25 @@ public class aboutViewModel
 
 public class agentViewModel
 {
+    public List<User> agents { get; set; } = new List<User>();
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public List<Agent> agents { get; set; } = new List<Agent>();
 }
 
 public class blogViewModel
 {
-    public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public List<Article> articles { get; set; } = new List<Article>();
     public int CurrentPage { get; set; } = 1;
     public int PageSize { get; set; } = 8;
     public int TotalCount { get; set; }
     public int TotalPages => PageSize <= 0 ? 0 : (int)Math.Ceiling((double)TotalCount / PageSize);
+    public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
+    public List<Property> articles { get; set; } = new List<Property>();
 }
 
 public class blogSingleViewModel
 {
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public Article? article { get; set; }
-    public List<Article> recentArticles { get; set; } = new List<Article>();
+    public Property? article { get; set; }
+    public List<Property> recentArticles { get; set; } = new List<Property>();
 }
 
 public class contactViewModel
@@ -41,24 +45,24 @@ public class contactViewModel
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
 }
 
-public class propertiesViewModel
+public class servicesViewModel
 {
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public List<Advertisement> advertisements { get; set; } = new List<Advertisement>();
-    public int CurrentPage { get; set; } = 1;
-    public int PageSize { get; set; } = 9;
-    public int TotalCount { get; set; }
-    public int TotalPages => PageSize <= 0 ? 0 : (int)Math.Ceiling((double)TotalCount / PageSize);
 }
 
 public class propertiesSingleViewModel
 {
+    public Property? property { get; set; }
+    public List<Property> properties { get; set; } = new List<Property>();
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public Advertisement? advertisement { get; set; }
-    public List<Advertisement> relatedAdvertisements { get; set; } = new List<Advertisement>();
 }
 
-public class servicesViewModel
+public class propertiesViewModel
 {
+    public List<Property> properties { get; set; } = new List<Property>();
+    public int CurrentPage { get; set; } = 1;
+    public int PageSize { get; set; } = 9;
+    public int TotalCount { get; set; }
+    public int TotalPages => PageSize <= 0 ? 0 : (int)Math.Ceiling((double)TotalCount / PageSize);
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
 }

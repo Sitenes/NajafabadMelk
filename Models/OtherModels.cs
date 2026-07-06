@@ -1,7 +1,6 @@
-﻿namespace WebSite.Models;
-// نگهداری اطلاعات و شرایط موردنظر متقاضی برای جستجو و تطبیق ملک
+namespace WebSite.Models;
 
-public class Applicant
+public class Supplier
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -13,7 +12,12 @@ public class Applicant
     public string? Phone2Number { get; set; }
     public string? MobileNumber { get; set; }
     public string? Referral { get; set; }
+}
 
-    // Relations
-    public List<Property_Applicant_FloorRelation> PropertyRelations { get; set; } = new();
+public class Tag
+{
+    public int Id { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? CreatedByUserId { get; set; }
+    public string? Title { get; set; }
 }

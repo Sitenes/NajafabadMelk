@@ -1,4 +1,3 @@
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @model HomeViewModel
 @{
 	ViewData["Title"] = "Home";
@@ -100,30 +99,26 @@
 							<div class="container">
 								<div class="row justify-content-center">
 									<div class="col-md-12 heading-section text-center ftco-animate mb-5">
-										<span class="subheading"> @Model.advertisementsCount @Model.staticDatas.LastOrDefault(x => x.Id ==
+										<span class="subheading"> @Model.propertyCount @Model.staticDatas.LastOrDefault(x => x.Id ==
 																																																												"E14").LocalizedContent(lang)</span>
 											<h2 class="mb-2">@Model.staticDatas.LastOrDefault(x => x.Id == "E15").LocalizedContent(lang)</h2>
 										</div>
 									</div>
 									<div class="row">
 										@{
-											foreach (Advertisement advertisement in Model.advertisements)
+											foreach (Property property in Model.properties)
 											{
-												var imageUrl = advertisement.House?.Images?.FirstOrDefault()?.Url;
-												var backgroundImage = string.IsNullOrWhiteSpace(imageUrl)
-													? Url.Content("~/images/work-1.jpg")
-													: Url.Content($"~/images/{imageUrl}");
-												var floor = advertisement.House?.Floors?.FirstOrDefault();
-												var roomsValue = advertisement.House?.Floors?.Sum(x => x.RoomCount) ?? floor?.RoomCount ?? 0;
-												var bathsValue = advertisement.House?.Floors?.Sum(x => x.ToiletType?.Id == 1 ? 1 : 0) ?? 0;
-												var areaValue = advertisement.House?.BuildingArea ?? floor?.Area ?? 0;
+												var backgroundImage = Url.Content($"~/images/{property.ImageAddress()}");
+												var roomsValue = property.RoomCount();
+												var bathsValue = property.BathCount();
+												var areaValue = property.AreaValue();
 												<div class="col-md-4">
 													<div class="property-wrap ftco-animate">
-														<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id" class="img"
+														<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@property.Id" class="img"
 														   style="background-image: url('@backgroundImage');"></a>
 														<div class="text">
-															<p class="price"><span class="old-price">@advertisement.Deal.TotalPrice</span><span
-																class="orig-price">@advertisement.Deal.FinalTotalPrice<small>@Model.staticDatas.LastOrDefault(x
+															<p class="price"><span class="old-price">@property.Price().ToString("N0")</span><span
+																class="orig-price">@property.FinalPrice().ToString("N0")<small>@Model.staticDatas.LastOrDefault(x
 																																																									=> x.Id == "E16").LocalizedContent(lang)</small></span></p>
 																<div class="table-responsive mb-2">
 																	<table class="table table-sm table-borderless mb-0">
@@ -143,24 +138,9 @@
 																		</tbody>
 																	</table>
 																</div>
-																		<h3>
-																			@{
-																				if (lang == "fa")
-																				{
-																					<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id">@advertisement.TitleFa</a>
-																				}
-																				else if (lang == "ar")
-																				{
-																					<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id">@advertisement.TitleAr</a>
-																				}
-																				else
-																				{
-																					<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id">@advertisement.TitleEn</a>
-																				}
-																			}
-																		</h3>
-																		<span class="location">@(advertisement.House?.RegistrationTime.ToString("yyyy/MM/dd") ?? "-")</span>
-																		<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@advertisement.Id" class="d-flex align-items-center justify-content-center btn-custom">
+																		<h3><a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@property.Id">@property.LocalizedTitle(lang)</a></h3>
+																		<span class="location">@property.PublishedAt().ToString("yyyy/MM/dd")</span>
+																		<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@property.Id" class="d-flex align-items-center justify-content-center btn-custom">
 																			<span class="ion-ios-link"></span>
 																		</a>
 																	</div>
@@ -427,7 +407,7 @@
 																																												<div class="col-md-3 ftco-animate">
 																																													<div class="agent">
 																																														<div class="img">
-																																															<img src="~/images/@agent.ImageAddress" class="img-fluid" alt="@agent.LocalizedName(lang)">
+																																															<img src="~/images/@agent.ImageAddress()" class="img-fluid" alt="@agent.LocalizedName(lang)">
 																																														</div>
 																																														<div class="desc">
 																																															<h3><a href="#">@agent.LocalizedName(lang)</a></h3>
@@ -457,11 +437,11 @@
 																																																<div class="text">
 																																																	<h3 class="heading"><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.LocalizedTitle(lang)</a></h3>
 																																																	<div class="meta mb-3">
-																																																		<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.PublishedAt.ToString("yyyy/MM/dd")</a></div>
-																																																		<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.AuthorName</a></div>
+																																																		<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.PublishedAt().ToString("yyyy/MM/dd")</a></div>
+																																																		<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.AuthorName()</a></div>
 																																																	</div>
 																																																	<a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id" class="block-20 img"
-																																																	   style="background-image: url('@Url.Content($"~/images/{article.ImageAddress}")');">
+																																																	   style="background-image: url('@Url.Content($"~/images/{article.ImageAddress()}")');">
 																																																	</a>
 																																																	<p>@article.LocalizedSummary(lang)</p>
 																																																</div>

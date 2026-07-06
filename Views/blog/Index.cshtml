@@ -31,11 +31,11 @@ class="ion-ios-arrow-forward"></i></span></p>
 <div class="text">
 <h3 class="heading"><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.LocalizedTitle(lang)</a></h3>
 <div class="meta mb-3">
-<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.PublishedAt.ToString("yyyy/MM/dd")</a></div>
-<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.AuthorName</a></div>
+<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.PublishedAt().ToString("yyyy/MM/dd")</a></div>
+<div><a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id">@article.AuthorName()</a></div>
 </div>
 <a asp-controller="blogSingle" asp-action="Index" asp-route-id="@article.Id" class="block-20 img"
-   style="background-image: url('@Url.Content($"~/images/{article.ImageAddress}")');">
+   style="background-image: url('@Url.Content($"~/images/{article.ImageAddress()}")');">
 </a>
 <p>@article.LocalizedSummary(lang)</p>
 </div>

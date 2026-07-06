@@ -11,56 +11,32 @@
 		_ => en
 	};
 
-	var advertisement = Model.advertisement;
-	var house = advertisement?.House;
-	var deal = advertisement?.Deal;
-	var floors = house?.Floors ?? new List<Floor>();
+	var property = Model.property;
+	var title = property.LocalizedTitle(lang);
+	var description = property.LocalizedDescription(lang);
+	var amenities = property.Keywords(lang);
 
-	var title = lang switch
-	{
-		"fa" => advertisement?.TitleFa ?? advertisement?.TitleEn ?? advertisement?.TitleAr ?? string.Empty,
-		"ar" => advertisement?.TitleAr ?? advertisement?.TitleEn ?? advertisement?.TitleFa ?? string.Empty,
-		_ => advertisement?.TitleEn ?? advertisement?.TitleFa ?? advertisement?.TitleAr ?? string.Empty
-	};
-
-	var description = lang switch
-	{
-		"fa" => advertisement?.DescriptionFa ?? advertisement?.DescriptionEn ?? advertisement?.DescriptionAr ?? string.Empty,
-		"ar" => advertisement?.DescriptionAr ?? advertisement?.DescriptionEn ?? advertisement?.DescriptionFa ?? string.Empty,
-		_ => advertisement?.DescriptionEn ?? advertisement?.DescriptionFa ?? advertisement?.DescriptionAr ?? string.Empty
-	};
-
-	var amenities = lang switch
-	{
-		"fa" => house?.AmenitiesFa ?? house?.AmenitiesEn ?? house?.AmenitiesAr ?? string.Empty,
-		"ar" => house?.AmenitiesAr ?? house?.AmenitiesEn ?? house?.AmenitiesFa ?? string.Empty,
-		_ => house?.AmenitiesEn ?? house?.AmenitiesFa ?? house?.AmenitiesAr ?? string.Empty
-	};
-
-	var galleryImages = house?.Images?.Select(x => Url.Content($"~/images/{x.Url}")).ToList() ?? new List<string>();
+	var galleryImages = property.GalleryImages().Select(x => Url.Content($"~/images/{x}")).ToList();
 	if (!galleryImages.Any())
 	{
 		galleryImages.Add(Url.Content("~/images/work-1.jpg"));
 	}
 	var mainImage = galleryImages.First();
 
-	var hasOffer = deal?.HaveOffer == true && deal.FinalTotalPrice > 0;
-	var totalPrice = deal?.TotalPrice ?? 0;
-	var finalPrice = hasOffer ? deal?.FinalTotalPrice ?? totalPrice : totalPrice;
-	var priceDiscountPercent = hasOffer && totalPrice > 0 && finalPrice < totalPrice
-		? (int)Math.Round((1m - (finalPrice / totalPrice)) * 100m)
-		: 0;
+	var hasOffer = property.HasOffer();
+	var finalPrice = property.Price();
+	var priceDiscountPercent = property.PriceDiscountPercent();
 
-	var locationParts = new[] { house?.City, house?.District, house?.Neighborhood }
-		.Where(x => !string.IsNullOrWhiteSpace(x))
-		.ToList();
-	var locationText = locationParts.Any() ? string.Join(" - ", locationParts) : T("Location not specified", "موقعیت ثبت نشده", "الموقع غير محدد");
+	var locationText = property.LocationText(lang);
 
-	var totalArea = floors.Sum(x => x.Area);
-	var totalRooms = floors.Sum(x => x.RoomCount);
-	var toiletCount = floors.Sum(x => x.ToiletType?.Id == 1 || x.ToiletType?.Id == 2 ? 1 : 0);
-	var totalCapacity = floors.Sum(x => x.Capacity);
-	var areaValue = house?.BuildingArea ?? totalArea;
+	var floors = property.FloorRelations.Select(x => x.Floor).Where(x => x != null).ToList();
+	var totalArea = floors.Sum(x => x.Infrastructure ?? 0);
+	var totalRooms = floors.Sum(x => x.RoomsCount ?? 0);
+	var toiletCount = floors.Sum(x => x.ParkingCount ?? 0); // Placeholder
+	var totalCapacity = property.TotalCapacity();
+	var areaValue = property.Area ?? totalArea;
+
+	var totalPrice = property.Price(); // Placeholder
 
 	ViewData["Lang"] = lang;
 }
@@ -139,7 +115,7 @@
 								</tr>
 								<tr>
 									<td><span class="ion-ios-pricetag mr-1"></span>@T("Property Code", "کد ملک", "رمز العقار")</td>
-									<td class="text-right">@(string.IsNullOrWhiteSpace(house?.PropertyCode) ? "-" : house.PropertyCode)</td>
+									<td class="text-right">@(string.IsNullOrWhiteSpace(property?.PropertyCode) ? "-" : property.PropertyCode)</td>
 								</tr>
 							</tbody>
 						</table>
@@ -153,7 +129,7 @@
 							<tbody>
 								<tr>
 									<td><span class="ion-ios-swap mr-1"></span>@T("Deal Type", "نوع معامله", "نوع الصفقة")</td>
-									<td class="text-right">@(deal?.DealType?.Name ?? "-")</td>
+									<td class="text-right">@property.DealType(lang)</td>
 								</tr>
 								<tr>
 									<td><span class="ion-logo-usd mr-1"></span>@T("Initial Price", "قیمت اولیه", "السعر الأساسي")</td>
@@ -165,19 +141,19 @@
 								</tr>
 								<tr>
 									<td><span class="ion-ios-card mr-1"></span>@T("Down Payment", "پیش پرداخت", "الدفعة المقدمة")</td>
-									<td class="text-right">@((deal?.DownPayment ?? 0).ToString("N0"))</td>
+									<td class="text-right">@property.DownPayment().ToString("N0")</td>
 								</tr>
 								<tr>
 									<td><span class="ion-ios-calendar mr-1"></span>@T("Monthly Payment", "پرداخت ماهانه", "الدفع الشهري")</td>
-									<td class="text-right">@((deal?.MonthlyPayment ?? 0).ToString("N0"))</td>
+									<td class="text-right">@property.MonthlyPayment().ToString("N0")</td>
 								</tr>
 								<tr>
 									<td><span class="ion-ios-pricetag mr-1"></span>@T("Offer Down Payment", "پیش پرداخت تخفیفی", "دفعة العرض")</td>
-									<td class="text-right">@((deal?.FinalDownPayment ?? 0).ToString("N0"))</td>
+									<td class="text-right">@property.FinalDownPayment().ToString("N0")</td>
 								</tr>
 								<tr>
 									<td><span class="ion-ios-pricetags mr-1"></span>@T("Offer Monthly Payment", "قسط ماهانه تخفیفی", "قسط العرض الشهري")</td>
-									<td class="text-right">@((deal?.FinalMonthlyPayment ?? 0).ToString("N0"))</td>
+									<td class="text-right">@property.FinalMonthlyPayment().ToString("N0")</td>
 								</tr>
 							</tbody>
 						</table>
@@ -191,26 +167,13 @@
 				<div class="bg-white p-4 shadow-sm">
 					<h4 class="mb-3">@T("Description", "توضیحات", "الوصف")</h4>
 					<p>@description</p>
-					@if (!string.IsNullOrWhiteSpace(amenities))
-					{
-						<p class="mb-2"><strong>@T("Amenities", "امکانات", "المرافق"):</strong> @amenities</p>
-					}
-					@if (advertisement?.Keywords?.Any() == true)
+					@if (amenities.Any())
 					{
 						<div>
 							<strong>@T("Keywords", "کلمات کلیدی", "الكلمات المفتاحية"):</strong>
-							@foreach (var keyword in advertisement.Keywords)
+							@foreach (var tagText in amenities)
 							{
-								var tagText = lang switch
-								{
-									"fa" => keyword.ContentFa ?? keyword.ContentEn ?? keyword.ContentAr,
-									"ar" => keyword.ContentAr ?? keyword.ContentEn ?? keyword.ContentFa,
-									_ => keyword.ContentEn ?? keyword.ContentFa ?? keyword.ContentAr
-								};
-								if (!string.IsNullOrWhiteSpace(tagText))
-								{
-									<span class="badge mr-2" style="background-color: #d6eeff; color: #0b4d7a;">@tagText</span>
-								}
+								<span class="badge mr-2" style="background-color: #d6eeff; color: #0b4d7a;">@tagText</span>
 							}
 						</div>
 					}
@@ -227,66 +190,39 @@
 						<div class="row">
 							@foreach (var floor in floors)
 							{
-								var floorMaterialsText = floor.FloorMaterials
-									.Select(x => lang switch
-									{
-										"fa" => x.ContentFa ?? x.Name,
-										"ar" => x.ContentAr ?? x.Name,
-										_ => x.ContentEn ?? x.Name
-									})
-									.Where(x => !string.IsNullOrWhiteSpace(x))
-									.Distinct()
-									.ToList();
-
 								<div class="col-md-6 mb-3">
 									<div class="border rounded p-3 h-100">
-										<h6 class="mb-3">@T("Floor", "طبقه", "الطابق") #@floor.Id</h6>
+										<h6 class="mb-3">@T("Floor", "طبقه", "الطابق") #@floor.FloorNo</h6>
 										<div class="table-responsive">
 											<table class="table table-sm table-borderless mb-0">
 												<tbody>
 													<tr>
 														<td>@T("Area", "متراژ", "المساحة")</td>
-														<td class="text-right">@floor.Area.ToString("N0") sqft</td>
+														<td class="text-right">@(floor.Infrastructure?.ToString("N0") ?? "0") sqft</td>
 													</tr>
 													<tr>
 														<td>@T("Rooms", "اتاق", "الغرف")</td>
-														<td class="text-right">@floor.RoomCount</td>
+														<td class="text-right">@floor.RoomsCount</td>
 													</tr>
 													<tr>
-														<td>@T("Capacity", "ظرفیت", "السعة")</td>
-														<td class="text-right">@floor.Capacity</td>
+														<td>@T("Parking", "پارکینگ", "موقف سيارات")</td>
+														<td class="text-right">@floor.ParkingCount</td>
 													</tr>
 													<tr>
-														<td>@T("Bathroom", "سرویس", "الحمام")</td>
-														<td class="text-right">@(floor.ToiletType?.Value ?? 0)</td>
+														<td>@T("Water", "آب", "ماء")</td>
+														<td class="text-right">@(floor.WaterType ?? "-")</td>
 													</tr>
 													<tr>
-														<td>@T("Balcony", "بالکن", "الشرفة")</td>
-														<td class="text-right">@(floor.HasBalcony ? (floor.BalconyArea?.ToString("N0") ?? "0") + " sqm" : "-")</td>
+														<td>@T("Electricity", "برق", "كهرباء")</td>
+														<td class="text-right">@(floor.ElectricityType ?? "-")</td>
 													</tr>
 													<tr>
-														<td>@T("Storage", "انباری", "التخزين")</td>
-														<td class="text-right">@(floor.HasStorage ? (floor.StorageArea?.ToString("N0") ?? "0") + " sqm" : "-")</td>
+														<td>@T("Gas", "گاز", "غاز")</td>
+														<td class="text-right">@(floor.GasType ?? "-")</td>
 													</tr>
 													<tr>
-														<td>@T("Direction", "جهت", "الاتجاه")</td>
-														<td class="text-right">@(floor.ConstructionDirection ?? "-")</td>
-													</tr>
-													<tr>
-														<td>@T("Cooling", "سرمایش", "التبريد")</td>
-														<td class="text-right">@(floor.CoolingStatus ?? "-")</td>
-													</tr>
-													<tr>
-														<td>@T("Heating", "گرمایش", "التدفئة")</td>
-														<td class="text-right">@(floor.HeatingStatus ?? "-")</td>
-													</tr>
-													<tr>
-														<td>@T("Hot Water", "آب گرم", "المياه الساخنة")</td>
-														<td class="text-right">@(floor.HotWaterStatus ?? "-")</td>
-													</tr>
-													<tr>
-														<td>@T("Materials", "متریال", "المواد")</td>
-														<td class="text-right">@(floorMaterialsText.Any() ? string.Join(" - ", floorMaterialsText) : "-")</td>
+														<td>@T("Landline", "تلفن", "هاتف")</td>
+														<td class="text-right">@(floor.LandlineType ?? "-")</td>
 													</tr>
 												</tbody>
 											</table>
@@ -300,21 +236,16 @@
 			</div>
 		}
 
-		@if (Model.relatedAdvertisements.Any())
+		@if (Model.properties.Any())
 		{
 			<div class="row mt-5">
 				<div class="col-md-12">
 					<h4 class="mb-4">@T("Similar Properties", "املاک مشابه", "عقارات مشابهة")</h4>
 				</div>
-				@foreach (var item in Model.relatedAdvertisements)
+				@foreach (var item in Model.properties)
 				{
-					var cardTitle = lang switch
-					{
-						"fa" => item.TitleFa ?? item.TitleEn ?? item.TitleAr ?? string.Empty,
-						"ar" => item.TitleAr ?? item.TitleEn ?? item.TitleFa ?? string.Empty,
-						_ => item.TitleEn ?? item.TitleFa ?? item.TitleAr ?? string.Empty
-					};
-					var cardImage = item.House?.Images?.FirstOrDefault()?.Url;
+					var cardTitle = item.LocalizedTitle(lang);
+					var cardImage = item.GalleryImages().FirstOrDefault();
 					var cardBackground = string.IsNullOrWhiteSpace(cardImage)
 						? Url.Content("~/images/work-1.jpg")
 						: Url.Content($"~/images/{cardImage}");
@@ -322,7 +253,7 @@
 						<div class="property-wrap ftco-animate">
 							<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@item.Id" class="img" style="background-image: url('@cardBackground');"></a>
 							<div class="text">
-								<p class="price"><span class="orig-price">@item.Deal?.FinalTotalPrice.ToString("N0")</span></p>
+								<p class="price"><span class="orig-price">@item.Price().ToString("N0")</span></p>
 								<h3><a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@item.Id">@cardTitle</a></h3>
 							</div>
 						</div>

@@ -3,25 +3,12 @@
 // مدل موقعیت مکانی
 public class Location
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? CreatedByUserId { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
 
-    public long? Parent { get; set; }
-
-    public string? FarsiName { get; set; }
-
-    public string? EnglishName { get; set; }
-
-    public string? Code { get; set; }
-
-    public string? PostalCode { get; set; }
-
-    public sbyte Level { get; set; }
-
-    public float? Latitude { get; set; }
-
-    public float? Longitude { get; set; }
-
-    public short? IsCapital { get; set; }
-
-    public string DivarAreas { get; set; }
+    // Relations
+    public List<Location_CityRelation> CityRelations { get; set; } = new();
 }

@@ -1,31 +1,33 @@
 using System.ComponentModel.DataAnnotations; // برای Data Annotations
 
+namespace WebSite.Models;
+
 // مدل طبقه
 public class Floor
 {
     public int Id { get; set; }
-    public double Area { get; set; }
-    public int RoomCount { get; set; }
-    public int Capacity { get; set; }
-    public bool HasBalcony { get; set; }
-    public double? BalconyArea { get; set; }
-    public bool HasStorage { get; set; }
-    public double? StorageArea { get; set; }
-    public string ConstructionDirection { get; set; }
-    public string CoolingStatus { get; set; }
-    public string HeatingStatus { get; set; }
-    public string HotWaterStatus { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? CreatedByUserId { get; set; }
     public string? FloorNo { get; set; }
-    public short? Infrastructure { get; set; }
-    public string? Water { get; set; }
-    public string? Electricity { get; set; }
-    public string? Gas { get; set; }
-    public string? Phone { get; set; }
+    public double? Infrastructure { get; set; }
+    public int? RoomsCount { get; set; }
+    public int? ParkingCount { get; set; }
+    public double? CommercialArea { get; set; }
+    public string? WaterType { get; set; }
+    public string? ElectricityType { get; set; }
+    public string? GasType { get; set; }
+    public string? LandlineType { get; set; }
     public string? Description { get; set; }
-    //Relation ---------------------------
-    public int ToiletTypeId { get; set; }
-    public Status ToiletType { get; set; }
-    public int HouseId { get; set; }
-    public House House { get; set; }
-    public List<Material> FloorMaterials { get; set; } = new List<Material>();
+    public string? PrivateDescription { get; set; }
+    public string? Status { get; set; }
+
+    // Relations
+    public List<Property_Advertisement_FloorRelation> AdvertisementRelations { get; set; } = new();
+    public List<Property_Applicant_FloorRelation> ApplicantRelations { get; set; } = new();
+    public List<Property_Deal_FloorRelation> DealRelations { get; set; } = new();
+    public List<Property_FloorRelation> PropertyRelations { get; set; } = new();
+    public List<Property_Location_FloorRelation> LocationRelations { get; set; } = new();
+    public List<Property_PropertyImage_FloorRelation> PropertyImageRelations { get; set; } = new();
+    public List<Property_Supplier_FloorRelation> SupplierRelations { get; set; } = new();
+    public List<Property_Tag_FloorRelation> TagRelations { get; set; } = new();
 }

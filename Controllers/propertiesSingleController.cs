@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSite.Models;
+using WebSite.ViewModels;
 
 namespace WebSite.Controllers;
 
@@ -22,37 +23,48 @@ public class propertiesSingleController : Controller
         }
 
         var viewModel = new propertiesSingleViewModel();
-        viewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
+        viewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
 
-        viewModel.advertisement = await _context.Advertisements
-            .Include(x => x.Keywords)
-            .Include(x => x.House)
-            .ThenInclude(x => x.Images)
-            .Include(x => x.House)
-            .ThenInclude(x => x.Floors)
-            .ThenInclude(x => x.FloorMaterials)
-            .Include(x => x.House)
-            .ThenInclude(x => x.Floors)
-            .ThenInclude(x => x.ToiletType)
-            .Include(x => x.Deal)
-            .ThenInclude(x => x.DealType)
+        viewModel.property = await _context.Properties
+            .Include(x => x.AdvertisementRelations)
+                .ThenInclude(r => r.Advertisement)
+            .Include(x => x.PropertyImageRelations)
+                .ThenInclude(r => r.PropertyImage)
+            .Include(x => x.FloorRelations)
+                .ThenInclude(r => r.Floor)
+            .Include(x => x.DealRelations)
+                .ThenInclude(r => r.Deal)
+            .Include(x => x.LocationRelations)
+                .ThenInclude(r => r.Location)
+                    .ThenInclude(l => l.CityRelations)
+                        .ThenInclude(cr => cr.City)
+            .Include(x => x.LocationRelations)
+                .ThenInclude(r => r.Location)
+                    .ThenInclude(l => l.CityRelations)
+                        .ThenInclude(cr => cr.Province)
+            .Include(x => x.LocationRelations)
+                .ThenInclude(r => r.Location)
+                    .ThenInclude(l => l.CityRelations)
+                        .ThenInclude(cr => cr.Neighborhood)
+            .Include(x => x.TagRelations)
+                .ThenInclude(r => r.Tag)
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (viewModel.advertisement is null)
+        if (viewModel.property is null)
         {
             return NotFound();
         }
 
-        var dealTypeId = viewModel.advertisement.Deal?.DealTypeId;
-        var finalPrice = viewModel.advertisement.Deal?.FinalTotalPrice ?? 0;
-        viewModel.relatedAdvertisements = await _context.Advertisements
-            .Where(x => x.Id != id && (dealTypeId == null || x.Deal.DealTypeId == dealTypeId)
-             && Math.Abs(x.Deal.FinalTotalPrice - finalPrice) <= (finalPrice / 5))
-            .Include(x => x.House)
-            .ThenInclude(x => x.Images)
-            .Include(x => x.House)
-            .ThenInclude(x => x.Floors)
-            .Include(x => x.Deal)
+        viewModel.properties = await _context.Properties
+            .Where(x => x.Id != id)
+            .Include(x => x.AdvertisementRelations)
+                .ThenInclude(r => r.Advertisement)
+            .Include(x => x.PropertyImageRelations)
+                .ThenInclude(r => r.PropertyImage)
+            .Include(x => x.FloorRelations)
+                .ThenInclude(r => r.Floor)
+            .Include(x => x.DealRelations)
+                .ThenInclude(r => r.Deal)
             .OrderByDescending(x => x.Id)
             .Take(3)
             .ToListAsync();

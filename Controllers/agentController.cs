@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSite.Models;
+using WebSite.ViewModels;
 
 namespace WebSite.Controllers;
 
@@ -17,8 +18,8 @@ public class agentController : Controller
     public async Task<IActionResult> Index()
     {
         var viewModel = new agentViewModel();
-        viewModel.staticDatas = await _context.staticDatas.Include(x => x.Group).ToListAsync();
-        viewModel.agents = await _context.Agents.ToListAsync();
+        viewModel.agents = await _context.Users.ToListAsync();
+        viewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
         return View(viewModel);
     }
 

@@ -7,6 +7,4 @@ public class Keyword
     public string ContentEn { get; set; }
     public string ContentAr { get; set; }
 
-    //Relation --------------------------
-    public List<Advertisement> Advertisements { get; set; } = new List<Advertisement>();
 }
