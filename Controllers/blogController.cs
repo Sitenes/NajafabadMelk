@@ -37,7 +37,7 @@ public class blogController : Controller
         viewModel.TotalCount = await _context.Properties.CountAsync();
         viewModel.CurrentPage = page;
         viewModel.PageSize = pageSize;
-        
+
         return View(viewModel);
     }
 

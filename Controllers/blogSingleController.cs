@@ -25,7 +25,7 @@ public class blogSingleController : Controller
             .Include(x => x.PropertyImageRelations)
                 .ThenInclude(r => r.PropertyImage)
             .FirstOrDefaultAsync(x => x.Id == id) ?? await _context.Properties.FirstOrDefaultAsync();
-        
+
         viewModel.recentArticles = await _context.Properties
             .Include(x => x.AdvertisementRelations)
                 .ThenInclude(r => r.Advertisement)

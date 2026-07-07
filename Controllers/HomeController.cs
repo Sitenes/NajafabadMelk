@@ -32,7 +32,7 @@ public class HomeController : Controller
                 .ThenInclude(r => r.Location)
                     .ThenInclude(l => l.CityRelations)
                         .ThenInclude(cr => cr.City)
-            .OrderBy(a => a.Id) 
+            .OrderBy(a => a.Id)
             .Take(10)
             .ToListAsync();
 
@@ -44,7 +44,7 @@ public class HomeController : Controller
             .Include(x => x.PropertyImageRelations)
                 .ThenInclude(r => r.PropertyImage)
             .Take(3)
-            .ToListAsync(); 
+            .ToListAsync();
         return View(ViewModel);
     }
 }
