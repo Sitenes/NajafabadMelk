@@ -18,7 +18,7 @@ public class agentController : Controller
     public async Task<IActionResult> Index()
     {
         var viewModel = new agentViewModel();
-        viewModel.agents = await _context.Users.ToListAsync();
+        viewModel.agents = await _context.Agents.ToListAsync();
         viewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
         return View(viewModel);
     }

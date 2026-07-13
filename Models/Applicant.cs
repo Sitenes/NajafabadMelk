@@ -1,5 +1,4 @@
 ﻿namespace WebSite.Models;
-// نگهداری اطلاعات و شرایط موردنظر متقاضی برای جستجو و تطبیق ملک
 
 public class Applicant
 {

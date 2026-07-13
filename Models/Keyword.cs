@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations; // برای Data Annotations
+namespace WebSite.Models;
 
 public class Keyword
 {
@@ -6,5 +6,4 @@ public class Keyword
     public string ContentFa { get; set; }
     public string ContentEn { get; set; }
     public string ContentAr { get; set; }
-
 }

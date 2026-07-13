@@ -25,13 +25,15 @@ public class propertiesSingleController : Controller
         var viewModel = new propertiesSingleViewModel();
         viewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
 
-        viewModel.property = await _context.Properties
+        viewModel.property = await _context.Property
             .Include(x => x.AdvertisementRelations)
                 .ThenInclude(r => r.Advertisement)
             .Include(x => x.PropertyImageRelations)
                 .ThenInclude(r => r.PropertyImage)
             .Include(x => x.FloorRelations)
                 .ThenInclude(r => r.Floor)
+                    .ThenInclude(f => f.RoomRelations)
+                        .ThenInclude(rr => rr.Room)
             .Include(x => x.DealRelations)
                 .ThenInclude(r => r.Deal)
             .Include(x => x.LocationRelations)
@@ -55,7 +57,7 @@ public class propertiesSingleController : Controller
             return NotFound();
         }
 
-        viewModel.properties = await _context.Properties
+        viewModel.properties = await _context.Property
             .Where(x => x.Id != id)
             .Include(x => x.AdvertisementRelations)
                 .ThenInclude(r => r.Advertisement)

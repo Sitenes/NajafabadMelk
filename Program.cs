@@ -48,6 +48,6 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<RealEstateDbContext>();
 
-    await db.Database.MigrateAsync();
+    // await db.Database.MigrateAsync();
 }
 app.Run();
