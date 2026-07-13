@@ -1,12 +1,12 @@
 name: Deploy to Server
-
+ 
 on:
   push:
     branches:
       - master
       - main
       - publish
- 
+
 env:
   DOTNET_VERSION: "10.0.x"
   PUBLISH_COMMAND: "dotnet publish -c Release -r linux-x64 --no-self-contained -o out"
