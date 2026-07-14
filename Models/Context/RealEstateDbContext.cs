@@ -8,19 +8,22 @@ public class RealEstateDbContext : DbContext
     {
     }
 
-    public DbSet<Property> Properties { get; set; }
-    public DbSet<Advertisement> Advertisements { get; set; }
-    public DbSet<Applicant> Applicants { get; set; }
-    public DbSet<Deal> Deals { get; set; }
-    public DbSet<Floor> Floors { get; set; }
-    public DbSet<Location> Locations { get; set; }
-    public DbSet<City> Cities { get; set; }
-    public DbSet<Province> Provinces { get; set; }
-    public DbSet<Neighborhood> Neighborhoods { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Supplier> Suppliers { get; set; }
-    public DbSet<Tag> Tags { get; set; }
-    public DbSet<PropertyImage> PropertyImages { get; set; }
+    public DbSet<Property> Property { get; set; }
+    public DbSet<Advertisement> Advertisement { get; set; }
+    public DbSet<Applicant> Applicant { get; set; }
+    public DbSet<Deal> Deal { get; set; }
+    public DbSet<Floor> Floor { get; set; }
+    public DbSet<Location> Location { get; set; }
+    public DbSet<City> City { get; set; }
+    public DbSet<Province> Province { get; set; }
+    public DbSet<Neighborhood> Neighborhood { get; set; }
+    public DbSet<User> User { get; set; }
+    public DbSet<Agent> Agents { get; set; }
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<Supplier> Supplier { get; set; }
+    public DbSet<Tag> Tag { get; set; }
+    public DbSet<Room> Room { get; set; }
+    public DbSet<PropertyImage> PropertyImage { get; set; }
     public DbSet<StaticData> StaticDatas { get; set; }
     public DbSet<StaticDataGroup> StaticDataGroups { get; set; }
 
@@ -34,11 +37,21 @@ public class RealEstateDbContext : DbContext
     public DbSet<Property_PropertyImage_FloorRelation> Property_PropertyImage_FloorRelations { get; set; }
     public DbSet<Property_Supplier_FloorRelation> Property_Supplier_FloorRelations { get; set; }
     public DbSet<Property_Tag_FloorRelation> Property_Tag_FloorRelations { get; set; }
+    public DbSet<Floor_RoomRelation> Floor_RoomRelations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configuration if needed
+        modelBuilder.Entity<Location_CityRelation>().ToTable("Location_CityRelation");
+        modelBuilder.Entity<Property_Advertisement_FloorRelation>().ToTable("Property_Advertisement_FloorRelation");
+        modelBuilder.Entity<Property_Applicant_FloorRelation>().ToTable("Property_Applicant_FloorRelation");
+        modelBuilder.Entity<Property_Deal_FloorRelation>().ToTable("Property_Deal_FloorRelation");
+        modelBuilder.Entity<Property_FloorRelation>().ToTable("Property_FloorRelation");
+        modelBuilder.Entity<Property_Location_FloorRelation>().ToTable("Property_Location_FloorRelation");
+        modelBuilder.Entity<Property_PropertyImage_FloorRelation>().ToTable("Property_PropertyImage_FloorRelation");
+        modelBuilder.Entity<Property_Supplier_FloorRelation>().ToTable("Property_Supplier_FloorRelation");
+        modelBuilder.Entity<Property_Tag_FloorRelation>().ToTable("Property_Tag_FloorRelation");
+        modelBuilder.Entity<Floor_RoomRelation>().ToTable("Floor_RoomRelation");
     }
 }

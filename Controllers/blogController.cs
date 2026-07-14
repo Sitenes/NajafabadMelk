@@ -25,16 +25,12 @@ public class blogController : Controller
 
         var viewModel = new blogViewModel();
         viewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
-        viewModel.articles = await _context.Properties
-            .Include(x => x.AdvertisementRelations)
-                .ThenInclude(r => r.Advertisement)
-            .Include(x => x.PropertyImageRelations)
-                .ThenInclude(r => r.PropertyImage)
-            .OrderByDescending(x => x.CreatedAt)
+        viewModel.articles = await _context.Articles
+            .OrderByDescending(x => x.PublishedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
-        viewModel.TotalCount = await _context.Properties.CountAsync();
+        viewModel.TotalCount = await _context.Articles.CountAsync();
         viewModel.CurrentPage = page;
         viewModel.PageSize = pageSize;
 

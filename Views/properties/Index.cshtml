@@ -1,0 +1,120 @@
+﻿@model propertiesViewModel
+@{
+	ViewData["Title"] = "Properties";
+	var httpContext = ViewContext?.HttpContext;
+	var lang = httpContext?.Items["lang"]?.ToString() ?? httpContext?.Request.RouteValues["lang"]?.ToString() ?? "en";
+	var staticDatas = Model.staticDatas ?? new List<StaticData>();
+	string StaticContent(string id, string fallback = "")
+	{
+		var item = staticDatas.LastOrDefault(x => x.Id == id);
+		if (item == null)
+		{
+			return fallback;
+		}
+
+		return lang switch
+		{
+			"fa" => item.StringContentFa ?? item.StringContentEn ?? fallback,
+			"ar" => item.StringContentAr ?? item.StringContentEn ?? fallback,
+			_ => item.StringContentEn ?? item.StringContentFa ?? fallback
+		};
+	}
+	ViewData["Lang"] = lang;
+}
+
+<section class="hero-wrap hero-wrap-2 ftco-degree-bg js-fullheight" style="background-image: url('images/bg_1.jpg');"
+		 data-stellar-background-ratio="0.5">
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row no-gutters slider-text js-fullheight align-items-center justify-content-center">
+			<div class="col-md-9 ftco-animate pb-5 text-center">
+				<p class="breadcrumbs "><span class="mr-2"><a href="index.html" class="">@StaticContent("E102")<i
+					class="ion-ios-arrow-forward"></i></a></span> <span>@StaticContent("E103") <i
+					class="ion-ios-arrow-forward"></i></span></p>
+					<h1 class="mb-3 bread ">@StaticContent("E104") <br>@StaticContent("E105")</h1>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row">
+				@foreach (var property in Model.properties)
+				{
+					var backgroundImage = Url.Content($"~/images/{property.ImageAddress()}");
+					var roomsValue = property.RoomCount();
+					var bathsValue = property.BathCount();
+					var areaValue = property.AreaValue();
+
+					<div class="col-md-4">
+						<div class="property-wrap ftco-animate">
+							<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@property.Id" class="img"
+							   style="background-image: url('@backgroundImage');"></a>
+							<div class="text">
+								<p class="price"><span class="old-price">@property.Price().ToString("N0")</span><span
+									class="orig-price">@property.FinalPrice().ToString("N0")<small>@StaticContent("E16", "/mo")</small></span></p>
+									<div class="table-responsive mb-2">
+										<table class="table table-sm table-borderless mb-0">
+											<tbody>
+												<tr>
+													<td><span class="flaticon-bed mr-1"></span>Rooms</td>
+													<td class="text-right">@roomsValue</td>
+												</tr>
+												<tr>
+													<td><span class="flaticon-bathtub mr-1"></span>Bath</td>
+													<td class="text-right">@bathsValue</td>
+												</tr>
+												<tr>
+													<td><span class="flaticon-floor-plan mr-1"></span>Area</td>
+													<td class="text-right">@areaValue.ToString("N0") @StaticContent("E135", "Meter")</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<h3><a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@property.Id">@property.LocalizedTitle(lang)</a></h3>
+									<span class="location">@property.LocationText(lang)</span>
+									<a asp-controller="propertiesSingle" asp-action="Index" asp-route-id="@property.Id"
+										   class="d-flex align-items-center justify-content-center btn-custom">
+										<span class="ion-ios-link"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+					}
+
+							@{
+								var totalPages = Model.TotalPages;
+							}
+
+					<div class="row mt-5">
+						<div class="col text-center">
+									@if (totalPages > 1)
+									{
+										<div class="block-27">
+											<ul>
+												<li class="@(Model.CurrentPage <= 1 ? "disabled" : null)">
+													<a asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)">&lt;</a>
+												</li>
+												@for (var pageNumber = 1; pageNumber <= totalPages; pageNumber++)
+												{
+													<li class="@(pageNumber == Model.CurrentPage ? "active" : null)">
+														@if (pageNumber == Model.CurrentPage)
+														{
+															<span>@pageNumber</span>
+														}
+														else
+														{
+															<a asp-action="Index" asp-route-page="@pageNumber">@pageNumber</a>
+														}
+													</li>
+												}
+												<li class="@(Model.CurrentPage >= totalPages ? "disabled" : null)">
+													<a asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)">&gt;</a>
+												</li>
+											</ul>
+										</div>
+									}
+						</div>
+					</div>
+				</section>

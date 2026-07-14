@@ -1,8 +1,5 @@
-using System.ComponentModel.DataAnnotations; // برای Data Annotations
-
 namespace WebSite.Models;
 
-// مدل طبقه
 public class Floor
 {
     public int Id { get; set; }
@@ -20,8 +17,23 @@ public class Floor
     public string? Description { get; set; }
     public string? PrivateDescription { get; set; }
     public string? Status { get; set; }
+    public int? Numberofkitchens { get; set; }
+    public double? KitchenArea { get; set; }
+    public string? Staircase { get; set; }
+    public string? Yard { get; set; }
+    public double? YardArea { get; set; }
+    public string? Wardrobe { get; set; }
+    public string? Cabbie { get; set; }
+    public string? FloorCovering { get; set; }
+    public string? BrightnessLevel { get; set; }
+    public int? WCCount { get; set; }
+    public double? WCArea { get; set; }
+    public double? LivingRoomArea { get; set; }
+    public string? HeatingSystem { get; set; }
+    public string? CoolingSystem { get; set; }
+    public int? Elevator { get; set; }
+    public string? OtherFacilities { get; set; }
 
-    // Relations
     public List<Property_Advertisement_FloorRelation> AdvertisementRelations { get; set; } = new();
     public List<Property_Applicant_FloorRelation> ApplicantRelations { get; set; } = new();
     public List<Property_Deal_FloorRelation> DealRelations { get; set; } = new();
@@ -30,4 +42,5 @@ public class Floor
     public List<Property_PropertyImage_FloorRelation> PropertyImageRelations { get; set; } = new();
     public List<Property_Supplier_FloorRelation> SupplierRelations { get; set; } = new();
     public List<Property_Tag_FloorRelation> TagRelations { get; set; } = new();
+    public List<Floor_RoomRelation> RoomRelations { get; set; } = new();
 }

@@ -224,9 +224,64 @@
 														<td>@T("Landline", "تلفن", "هاتف")</td>
 														<td class="text-right">@(floor.LandlineType ?? "-")</td>
 													</tr>
+													<tr>
+														<td>@T("Kitchens", "تعداد آشپزخانه", "المطابخ")</td>
+														<td class="text-right">@(floor.Numberofkitchens?.ToString() ?? "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Kitchen Area", "متراژ آشپزخانه", "مساحة المطبخ")</td>
+														<td class="text-right">@(floor.KitchenArea?.ToString("N0") ?? "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Yard", "حیاط", "فناء")</td>
+														<td class="text-right">@(floor.Yard ?? "-") (@(floor.YardArea?.ToString("N0") ?? "0"))</td>
+													</tr>
+													<tr>
+														<td>@T("Heating", "سیستم گرمایش", "تدفئة")</td>
+														<td class="text-right">@(floor.HeatingSystem ?? "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Cooling", "سیستم سرمایش", "تبريد")</td>
+														<td class="text-right">@(floor.CoolingSystem ?? "-")</td>
+													</tr>
+													<tr>
+														<td>@T("Elevator", "آسانسور", "مصعد")</td>
+														<td class="text-right">@(floor.Elevator > 0 ? T("Yes", "دارد", "يوجد") : T("No", "ندارد", "لا يوجد"))</td>
+													</tr>
 												</tbody>
 											</table>
 										</div>
+										@if (floor.RoomRelations.Any())
+										{
+											<div class="mt-3">
+												<h6 class="small font-weight-bold">@T("Rooms Info", "اطلاعات اتاق‌ها", "معلومات الغرف")</h6>
+												<div class="table-responsive">
+													<table class="table table-sm table-bordered mb-0" style="font-size: 0.85rem;">
+														<thead>
+															<tr>
+																<th>@T("Area", "متراژ", "مساحة")</th>
+																<th>@T("Wardrobe", "کمد", "خزانة")</th>
+																<th>@T("Conditioning", "تهویه", "تكييف")</th>
+															</tr>
+														</thead>
+														<tbody>
+															@foreach (var roomRel in floor.RoomRelations)
+															{
+																var room = roomRel.Room;
+																if (room != null)
+																{
+																	<tr>
+																		<td>@room.RoomArea m²</td>
+																		<td>@room.Wardrobe</td>
+																		<td>@room.CoolingSystem / @room.Heating</td>
+																	</tr>
+																}
+															}
+														</tbody>
+													</table>
+												</div>
+											</div>
+										}
 									</div>
 								</div>
 							}

@@ -12,3 +12,22 @@ public class User
     public bool? IsActive { get; set; }
     public string? MobileNumber { get; set; }
 }
+
+public static class UserExtensions
+{
+    public static string LocalizedName(this User? user, string lang)
+    {
+        if (user == null) return string.Empty;
+        return $"{user.FirstName} {user.LastName}";
+    }
+
+    public static string LocalizedExpert(this User? user, string lang)
+    {
+        return "Real Estate Agent";
+    }
+
+    public static string ImageAddress(this User? user)
+    {
+        return "person_1.jpg";
+    }
+}

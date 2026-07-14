@@ -18,10 +18,10 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var ViewModel = new HomeViewModel();
-        var totalProperties = await _context.Properties.CountAsync();
-        ViewModel.propertyCount = totalProperties;
+        var totalProperty = await _context.Property.CountAsync();
+        ViewModel.propertyCount = totalProperty;
 
-        ViewModel.properties = await _context.Properties
+        ViewModel.properties = await _context.Property
             .Include(x => x.AdvertisementRelations)
                 .ThenInclude(r => r.Advertisement)
             .Include(x => x.PropertyImageRelations)
@@ -37,12 +37,9 @@ public class HomeController : Controller
             .ToListAsync();
 
         ViewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
-        ViewModel.agents = await _context.Users.Take(4).ToListAsync();
-        ViewModel.articles = await _context.Properties
-            .Include(x => x.AdvertisementRelations)
-                .ThenInclude(r => r.Advertisement)
-            .Include(x => x.PropertyImageRelations)
-                .ThenInclude(r => r.PropertyImage)
+        ViewModel.agents = await _context.Agents.Take(4).ToListAsync();
+        ViewModel.articles = await _context.Articles
+            .OrderByDescending(x => x.PublishedAt)
             .Take(3)
             .ToListAsync();
         return View(ViewModel);

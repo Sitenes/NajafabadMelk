@@ -1,8 +1,5 @@
-using System.ComponentModel.DataAnnotations; // برای Data Annotations
-
 namespace WebSite.Models;
 
-// مدل معامله
 public class Deal
 {
     public int Id { get; set; }
@@ -17,6 +14,5 @@ public class Deal
     public string? Description { get; set; }
     public string? Status { get; set; }
 
-    // Relations
     public List<Property_Deal_FloorRelation> PropertyRelations { get; set; } = new();
 }

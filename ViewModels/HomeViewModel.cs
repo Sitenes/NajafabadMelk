@@ -8,8 +8,8 @@ public class HomeViewModel
     public int propertyCount { get; set; }
     public List<Property> properties { get; set; } = new List<Property>();
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public List<User> agents { get; set; } = new List<User>();
-    public List<Property> articles { get; set; } = new List<Property>(); // Using Property as placeholder for now
+    public List<Agent> agents { get; set; } = new List<Agent>();
+    public List<Article> articles { get; set; } = new List<Article>();
 }
 
 public class aboutViewModel
@@ -19,7 +19,7 @@ public class aboutViewModel
 
 public class agentViewModel
 {
-    public List<User> agents { get; set; } = new List<User>();
+    public List<Agent> agents { get; set; } = new List<Agent>();
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
 }
 
@@ -30,14 +30,14 @@ public class blogViewModel
     public int TotalCount { get; set; }
     public int TotalPages => PageSize <= 0 ? 0 : (int)Math.Ceiling((double)TotalCount / PageSize);
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public List<Property> articles { get; set; } = new List<Property>();
+    public List<Article> articles { get; set; } = new List<Article>();
 }
 
 public class blogSingleViewModel
 {
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
-    public Property? article { get; set; }
-    public List<Property> recentArticles { get; set; } = new List<Property>();
+    public Article? article { get; set; }
+    public List<Article> recentArticles { get; set; } = new List<Article>();
 }
 
 public class contactViewModel
@@ -56,6 +56,14 @@ public class propertiesSingleViewModel
     public List<Property> properties { get; set; } = new List<Property>();
     public List<StaticData> staticDatas { get; set; } = new List<StaticData>();
 }
+
+public class PropertyCreateEditViewModel
+{
+    public Property Property { get; set; } = new();
+    public List<Floor> Floors { get; set; } = new();
+    public List<int> SelectedTagIds { get; set; } = new();
+}
+
 
 public class propertiesViewModel
 {

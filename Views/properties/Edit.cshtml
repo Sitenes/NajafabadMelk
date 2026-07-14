@@ -1,0 +1,113 @@
+@model WebSite.ViewModels.PropertyCreateEditViewModel
+@{
+    ViewData["Title"] = "Edit Property";
+}
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="bg-white p-5 shadow-sm">
+                    <h2 class="mb-4">Edit Property #@Model.Property.Id</h2>
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Property.Id" />
+                        <input type="hidden" asp-for="Property.CreatedAt" />
+                        <input type="hidden" asp-for="Property.CreatedByUserId" />
+                        
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label asp-for="Property.PropertyCode" class="control-label">Property Code</label>
+                                <input asp-for="Property.PropertyCode" class="form-control" />
+                                <span asp-validation-for="Property.PropertyCode" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label asp-for="Property.UsageType" class="control-label">Usage Type</label>
+                                <input asp-for="Property.UsageType" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label asp-for="Property.PropertyType" class="control-label">Property Type</label>
+                                <input asp-for="Property.PropertyType" class="form-control" />
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label asp-for="Property.ConstructionType" class="control-label">Construction Type</label>
+                                <input asp-for="Property.ConstructionType" class="form-control" />
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label asp-for="Property.ConstructionYear" class="control-label">Construction Year</label>
+                                <input asp-for="Property.ConstructionYear" type="number" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label asp-for="Property.Area" class="control-label">Area</label>
+                                <input asp-for="Property.Area" type="number" step="0.01" class="form-control" />
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label asp-for="Property.region" class="control-label">Region</label>
+                                <input asp-for="Property.region" class="form-control" />
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label asp-for="Property.Neighborhood" class="control-label">Neighborhood</label>
+                                <input asp-for="Property.Neighborhood" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label asp-for="Property.GeographicalLocation" class="control-label">Geographical Location</label>
+                                <input asp-for="Property.GeographicalLocation" class="form-control" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label asp-for="Property.FacadeType" class="control-label">Facade Type</label>
+                                <input asp-for="Property.FacadeType" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3 form-group form-check ml-3">
+                                <input asp-for="Property.Renovated" class="form-check-input" />
+                                <label asp-for="Property.Renovated" class="form-check-label">Renovated</label>
+                            </div>
+                            <div class="col-md-3 form-group form-check">
+                                <input asp-for="Property.Expandable" class="form-check-input" />
+                                <label asp-for="Property.Expandable" class="form-check-label">Expandable</label>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label asp-for="Property.Retreat" class="control-label">Retreat</label>
+                                <input asp-for="Property.Retreat" type="number" class="form-control" />
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label asp-for="Property.Status" class="control-label">Status</label>
+                                <input asp-for="Property.Status" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Property.Address" class="control-label">Address</label>
+                            <textarea asp-for="Property.Address" class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Property.Description" class="control-label">Description</label>
+                            <textarea asp-for="Property.Description" class="form-control" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-success">Save Changes</button>
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

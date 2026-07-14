@@ -19,18 +19,11 @@ public class blogSingleController : Controller
     {
         var viewModel = new blogSingleViewModel();
         viewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
-        viewModel.article = await _context.Properties
-            .Include(x => x.AdvertisementRelations)
-                .ThenInclude(r => r.Advertisement)
-            .Include(x => x.PropertyImageRelations)
-                .ThenInclude(r => r.PropertyImage)
-            .FirstOrDefaultAsync(x => x.Id == id) ?? await _context.Properties.FirstOrDefaultAsync();
+        viewModel.article = await _context.Articles
+            .FirstOrDefaultAsync(x => x.Id == id) ?? await _context.Articles.FirstOrDefaultAsync();
 
-        viewModel.recentArticles = await _context.Properties
-            .Include(x => x.AdvertisementRelations)
-                .ThenInclude(r => r.Advertisement)
-            .Include(x => x.PropertyImageRelations)
-                .ThenInclude(r => r.PropertyImage)
+        viewModel.recentArticles = await _context.Articles
+            .OrderByDescending(x => x.PublishedAt)
             .Take(4)
             .ToListAsync();
 

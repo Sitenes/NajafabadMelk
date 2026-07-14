@@ -1,3 +1,5 @@
+namespace WebSite.Models;
+
 public class Article
 {
     public int Id { get; set; }
@@ -46,6 +48,11 @@ public static class ArticleExtensions
         };
     }
 
+    public static string LocalizedDescription(this Article? article, string lang)
+    {
+        return article.LocalizedContent(lang);
+    }
+
     public static string LocalizedContent(this Article? article, string lang)
     {
         if (article == null) return string.Empty;
@@ -56,5 +63,20 @@ public static class ArticleExtensions
             "ar" => article.ContentAr ?? article.ContentEn ?? string.Empty,
             _ => article.ContentEn ?? article.ContentFa ?? string.Empty
         };
+    }
+
+    public static string ImageAddress(this Article? article)
+    {
+        return string.IsNullOrEmpty(article?.ImageAddress) ? "image_1.jpg" : article.ImageAddress;
+    }
+
+    public static DateTime PublishedAt(this Article? article)
+    {
+        return article?.PublishedAt ?? DateTime.Now;
+    }
+
+    public static string AuthorName(this Article? article)
+    {
+        return string.IsNullOrEmpty(article?.AuthorName) ? "Admin" : article.AuthorName;
     }
 }
