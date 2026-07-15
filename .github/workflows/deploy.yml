@@ -95,7 +95,7 @@ jobs:
               ASPNETCORE_URLS="http://127.0.0.1:$APP_PORT" \
               ./"$APP_NAME" \
               > "$LOG_FILE" 2>&1 &
-
+ 
             echo $! > "$PID_FILE"
 
             echo "PID=$(cat $PID_FILE)"
