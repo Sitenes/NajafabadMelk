@@ -99,8 +99,7 @@
 											<li class="@(Model.CurrentPage <= 1 ? "disabled" : null)">
 												<a asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)">&lt;</a>
 											</li>
-											@for (var pageNumber = Model.CurrentPage - 2; pageNumber <= Model.CurrentPage + 2;
-						pageNumber++)
+											@for (var pageNumber = Model.CurrentPage - 2; pageNumber <= Model.CurrentPage + 2;	pageNumber++)
 											{
 												if (pageNumber < totalPages + 1 && pageNumber > 0)
 												{

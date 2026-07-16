@@ -149,7 +149,7 @@ public static class PropertyExtensions
 
     public static string LocationText(this Property? p, string lang)
     {
-        if (p == null || p.LocationRelations == null) return "Unknown";
+        if (p == null || p.LocationRelations == null) return "Iran-najafabad";
         var loc = p.LocationRelations.FirstOrDefault()?.Location;
         if (loc == null) return "Unknown";
         var rel = loc.CityRelations?.FirstOrDefault();
