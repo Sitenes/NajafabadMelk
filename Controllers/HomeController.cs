@@ -20,6 +20,7 @@ public class HomeController : Controller
         var ViewModel = new HomeViewModel();
         var totalProperty = await _context.Property.CountAsync();
         ViewModel.propertyCount = totalProperty;
+        int[] ids = { 27797, 31581, 38238, 41317, 30634, 31010, 33014, 46149, 47436, 26137, 28814, 28829 };
 
         ViewModel.properties = await _context.Property
             .Include(x => x.AdvertisementRelations)
@@ -32,7 +33,7 @@ public class HomeController : Controller
                 .ThenInclude(r => r.Location)
                     .ThenInclude(l => l.CityRelations)
                         .ThenInclude(cr => cr.City)
-            .Take(10)
+            .Where(x => ids.Contains(x.Id))
             .ToListAsync();
 
         ViewModel.staticDatas = await _context.StaticDatas.Include(x => x.Group).ToListAsync();
