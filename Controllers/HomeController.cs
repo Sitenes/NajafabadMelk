@@ -32,7 +32,6 @@ public class HomeController : Controller
                 .ThenInclude(r => r.Location)
                     .ThenInclude(l => l.CityRelations)
                         .ThenInclude(cr => cr.City)
-            .OrderBy(a => a.Id)
             .Take(10)
             .ToListAsync();
 
